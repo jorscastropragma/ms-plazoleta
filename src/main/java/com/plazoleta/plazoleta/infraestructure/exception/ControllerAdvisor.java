@@ -1,5 +1,7 @@
 package com.plazoleta.plazoleta.infraestructure.exception;
 
+import com.plazoleta.plazoleta.domain.exception.NoEsPropietarioException;
+import com.plazoleta.plazoleta.domain.exception.NombreRestauranteInvalidoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -26,6 +28,24 @@ public class ControllerAdvisor {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap("mensaje", message));
+    }
+
+    @ExceptionHandler(NombreRestauranteInvalidoException.class)
+    public ResponseEntity<Map<String, String>> domainNombreRestauranteException(NombreRestauranteInvalidoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Collections.singletonMap("mensaje",ex.getLocalizedMessage()));
+    }
+
+    @ExceptionHandler(NoEsPropietarioException.class)
+    public ResponseEntity<Map<String, String>> domainNoEsPropietarioException(NoEsPropietarioException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Collections.singletonMap("mensaje",ex.getLocalizedMessage()));
+    }
+
+    @ExceptionHandler(UsuarioNoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> infraUsuarioNoEncontradoException(UsuarioNoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Collections.singletonMap("mensaje",ex.getLocalizedMessage()));
     }
 
 }

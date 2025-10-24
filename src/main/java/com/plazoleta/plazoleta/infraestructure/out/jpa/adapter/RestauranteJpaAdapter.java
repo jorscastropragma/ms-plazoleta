@@ -14,7 +14,7 @@ public class RestauranteJpaAdapter implements IRestaurantePersistencePort {
     private final RestauranteEntityMapper restauranteEntityMapper;
 
     @Override
-    public void guardar(Restaurante restaurante) {
+    public void guardarRestaurante(Restaurante restaurante) {
         restauranteRepository.save(restauranteEntityMapper.toRestauranteEntity(restaurante));
     }
 }

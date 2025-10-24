@@ -23,3 +23,6 @@ spring:
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: create-drop
+
+usuario:
+  url: "http://localhost:8080/usuario"
