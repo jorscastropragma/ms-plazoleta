@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class RestauranteRestController {
             }
     )
     @PostMapping("/")
-    public ResponseEntity<Void> crearRestaurante(@RequestBody RestauranteRequest restauranteRequest) {
+    public ResponseEntity<Void> crearRestaurante(@Valid @RequestBody RestauranteRequest restauranteRequest) {
         iRestauranteHandler.guardarRestaurante(restauranteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
