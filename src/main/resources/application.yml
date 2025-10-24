@@ -10,3 +10,16 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/plazoleta
+    username: postgres
+    password: postgres
+  sql:
+    init:
+      mode: always
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create-drop
