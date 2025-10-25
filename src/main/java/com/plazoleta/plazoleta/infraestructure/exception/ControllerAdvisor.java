@@ -16,6 +16,8 @@ import java.util.Map;
 @ControllerAdvice
 public class ControllerAdvisor {
 
+    private static final String MENSAJE = "mensaje";
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
         String message = "Error de validación";
@@ -27,25 +29,25 @@ public class ControllerAdvisor {
             }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Collections.singletonMap("mensaje", message));
+                .body(Collections.singletonMap(MENSAJE, message));
     }
 
     @ExceptionHandler(NombreRestauranteInvalidoException.class)
     public ResponseEntity<Map<String, String>> domainNombreRestauranteException(NombreRestauranteInvalidoException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Collections.singletonMap("mensaje",ex.getLocalizedMessage()));
+                .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
     }
 
     @ExceptionHandler(NoEsPropietarioException.class)
     public ResponseEntity<Map<String, String>> domainNoEsPropietarioException(NoEsPropietarioException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Collections.singletonMap("mensaje",ex.getLocalizedMessage()));
+                .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
     }
 
     @ExceptionHandler(UsuarioNoEncontradoException.class)
     public ResponseEntity<Map<String, String>> infraUsuarioNoEncontradoException(UsuarioNoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Collections.singletonMap("mensaje",ex.getLocalizedMessage()));
+                .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
     }
 
 }

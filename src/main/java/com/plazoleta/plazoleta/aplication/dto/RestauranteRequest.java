@@ -13,7 +13,7 @@ public class RestauranteRequest {
     private String nombre;
 
     @NotBlank(message = "El nit es obligatorio.")
-    @Pattern(regexp = "^[0-9]+$", message = "El campo nit debe contener solo números")
+    @Pattern(regexp = "^\\d+$", message = "El campo nit debe contener solo números")
     private String nit;
 
     @NotBlank(message = "La direccion es obligatoria.")

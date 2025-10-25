@@ -1,6 +1,5 @@
 package com.plazoleta.plazoleta.infraestructure.out.restconsumer.adapter;
 
-import com.plazoleta.plazoleta.domain.model.Restaurante;
 import com.plazoleta.plazoleta.domain.model.Usuario;
 import com.plazoleta.plazoleta.domain.spi.IUsuarioPersistencePort;
 import com.plazoleta.plazoleta.infraestructure.exception.UsuarioNoEncontradoException;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class UsuarioRestConsumerAdapter implements IUsuarioPersistencePort {
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 return usuarioDtoRestConsumerMapper.toUsuario(response.getBody());
             }
-        }catch (HttpClientErrorException ex) {
+        }catch (HttpClientErrorException | ResourceAccessException ex) {
             throw new UsuarioNoEncontradoException("Usuario no encontrado: " + idUsuario);
         }
         return null;
