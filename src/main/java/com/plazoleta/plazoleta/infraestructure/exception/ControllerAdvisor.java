@@ -2,6 +2,7 @@ package com.plazoleta.plazoleta.infraestructure.exception;
 
 import com.plazoleta.plazoleta.domain.exception.NoEsPropietarioException;
 import com.plazoleta.plazoleta.domain.exception.NombreRestauranteInvalidoException;
+import com.plazoleta.plazoleta.domain.exception.RestauranteNoEncontradoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -32,20 +33,13 @@ public class ControllerAdvisor {
                 .body(Collections.singletonMap(MENSAJE, message));
     }
 
-    @ExceptionHandler(NombreRestauranteInvalidoException.class)
-    public ResponseEntity<Map<String, String>> domainNombreRestauranteException(NombreRestauranteInvalidoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
-    }
-
-    @ExceptionHandler(NoEsPropietarioException.class)
-    public ResponseEntity<Map<String, String>> domainNoEsPropietarioException(NoEsPropietarioException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
-    }
-
-    @ExceptionHandler(UsuarioNoEncontradoException.class)
-    public ResponseEntity<Map<String, String>> infraUsuarioNoEncontradoException(UsuarioNoEncontradoException ex) {
+    @ExceptionHandler({
+            NombreRestauranteInvalidoException.class,
+            NoEsPropietarioException.class,
+            UsuarioNoEncontradoException.class,
+            RestauranteNoEncontradoException.class
+    })
+    public ResponseEntity<Map<String, String>> plazoletaException(RuntimeException  ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
     }
