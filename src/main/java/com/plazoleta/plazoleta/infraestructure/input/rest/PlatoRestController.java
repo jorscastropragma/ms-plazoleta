@@ -6,6 +6,7 @@ import com.plazoleta.plazoleta.aplication.dto.PlatoResponse;
 import com.plazoleta.plazoleta.aplication.handler.IPlatoHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,6 +41,14 @@ public class PlatoRestController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Operation(summary = "Actualizar plato",
+    description = "Actualizar plato, pero solamente precio y descripcion")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PlatoResponse.class))),
+            @ApiResponse(responseCode = "400",content = @Content(mediaType = "application/json"))
+    })
     @PatchMapping("/{id}")
     public ResponseEntity<PlatoResponse> actualizarPlato(@PathVariable Long id, @Valid @RequestBody PlatoPrecioDescripcionRequest platoRequest){
         return ResponseEntity.ok(iPlatoHandler.actualizarPlato(platoRequest,id));

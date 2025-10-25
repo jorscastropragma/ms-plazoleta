@@ -37,37 +37,47 @@ class RestauranteUseCaseTest {
     }
 
     @Test
-    void guardarRestaurante() {
+    void guardarRestaurante_correctamente() {
 
         restauranteUseCase.guardarRestaurante(restaurante);
 
+        verify(restauranteValidador).validarNombreRestaurante("local");
+        verify(restauranteValidador).validarPropietarioRestaurante(1L);
         verify(restaurantePersistencePort).guardarRestaurante(restaurante);
     }
 
     @Test
-    void guardarRestauranteSoloNumerosEnNombre() {
+    void guardarRestaurante_CuandoTieneSoloNumerosEnNombre() {
         restaurante.setNombre("124545");
 
         doThrow(new NombreRestauranteInvalidoException("Nombre del restaurante invalido"))
-                .when(restauranteValidador).validarNombreRestaurante(restaurante.getNombre());
+                .when(restauranteValidador).validarNombreRestaurante("12345");
 
-        assertThrows(NombreRestauranteInvalidoException.class, () -> {
+        NombreRestauranteInvalidoException exception = assertThrows(NombreRestauranteInvalidoException.class, () -> {
             restauranteUseCase.guardarRestaurante(restaurante);
         });
 
+        assertEquals("Nombre del restaurante invalido",exception.getMessage());
+
+        verify(restauranteValidador).validarNombreRestaurante("12345");
+        verify(restauranteValidador,never()).validarPropietarioRestaurante(anyLong());
         verify(restaurantePersistencePort,never()).guardarRestaurante(restaurante);
     }
 
     @Test
-    void guardarRestauranteNoEsUnPropietario(){
+    void guardarRestaurante_CuandoNoEsUnPropietario(){
 
         doThrow(new NoEsPropietarioException("Usuario invalido."))
-                .when(restauranteValidador).validarPropietarioRestaurante(restaurante.getIdUsuario());
+                .when(restauranteValidador).validarPropietarioRestaurante(1L);
 
-        assertThrows(NoEsPropietarioException.class, () -> {
+        NoEsPropietarioException exception = assertThrows(NoEsPropietarioException.class, () -> {
             restauranteUseCase.guardarRestaurante(restaurante);
         });
 
+        assertEquals("Usuario invalido.",exception.getMessage());
+
+        verify(restauranteValidador).validarNombreRestaurante("local");
+        verify(restauranteValidador).validarPropietarioRestaurante(1L);
         verify(restaurantePersistencePort,never()).guardarRestaurante(restaurante);
     }
 }

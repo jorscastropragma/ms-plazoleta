@@ -34,37 +34,49 @@ class RestauranteValidadorTest {
     }
 
     @Test
-    void validarNombreRestauranteSinException() {
+    void validarNombreRestaurante_CuandoEsValido() {
         String nombreRestaurante = "Nombre del restaurante";
 
         assertDoesNotThrow(() -> validador.validarNombreRestaurante(nombreRestaurante));
     }
 
     @Test
-    void validarNombreRestauranteConException() {
-        String nombreRestaurante = "3242343242";
+    void validarNombreRestaurante_CuandoEsNulo() {
+        String nombreRestaurante = null;
 
-        assertThrows(NombreRestauranteInvalidoException.class, () ->
-                validador.validarNombreRestaurante(nombreRestaurante));
+        assertDoesNotThrow(() -> validador.validarNombreRestaurante(nombreRestaurante));
     }
 
     @Test
-    void validarPropietarioRestauranteSinException() {
+    void validarNombreRestaurante_CuandoNombreNoEsValido_TieneSoloNumeros() {
+        String nombreRestaurante = "3242343242";
+
+        NombreRestauranteInvalidoException exception = assertThrows(NombreRestauranteInvalidoException.class,
+                () -> validador.validarNombreRestaurante(nombreRestaurante));
+
+        assertEquals("Nombre del restaurante invalido",exception.getMessage());
+    }
+
+    @Test
+    void validarPropietarioRestaurante_CuandoEsPropietario() {
         Long idUsuario = 1L;
 
-
         when(usuarioPersistencePort.obtenerUsuarioPorId(idUsuario)).thenReturn(usuario);
+
         assertDoesNotThrow(() -> validador.validarPropietarioRestaurante(idUsuario));
     }
 
     @Test
-    void validarPropietarioRestauranteConException() {
-        Long idUsuario  = 3L;
+    void validarPropietarioRestaurante_CuandoNoEsPropietario() {
+        Long idUsuario  = 1L;
         usuario.setRol("ADMIN");
 
         when(usuarioPersistencePort.obtenerUsuarioPorId(idUsuario)).thenReturn(usuario);
 
-        assertThrows(NoEsPropietarioException.class, () ->
+        NoEsPropietarioException exception = assertThrows(NoEsPropietarioException.class, () ->
                 validador.validarPropietarioRestaurante(idUsuario));
+
+        assertEquals("Usuario invalido.",exception.getMessage());
+
     }
 }

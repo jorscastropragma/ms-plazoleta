@@ -33,29 +33,50 @@ class PlatoUseCaseTest {
     }
 
     @Test
-    void guardarPlato() {
+    void guardarPlato_CuenadoRestauranteExiste_GuardarPlatoActivo() {
 
-        when(restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())).thenReturn(true);
+        when(restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())).
+                thenReturn(true);
         
         platoUseCase.guardarPlato(plato);
 
-        assertTrue(plato.getActivo());
+        assertTrue(plato.getActivo(), "El plato debe estar activo por defecto");
 
+        verify(restaurantePersistencePort).existeRestaurantePorId(1L);
         verify(platoPersistencePort).guardarPlato(plato);
     }
 
     @Test
-    void guardarPlatoRestauranteNoExiste() {
+    void guardarPlato_CuandoRestauranteNoExiste_LanzaExcepcion() {
 
-        when(restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())).thenReturn(false);
+        when(restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())).
+                thenReturn(false);
 
-        assertThrows(RestauranteNoEncontradoException.class,() ->{
+        RestauranteNoEncontradoException exception =
+                assertThrows(RestauranteNoEncontradoException.class,() ->{
             platoUseCase.guardarPlato(plato);
         });
 
-        assertFalse(plato.getActivo());
+        assertEquals("Restaurante no encontrado.",exception.getMessage());
+
+        assertFalse(plato.getActivo(),"El plato no debe estar activo");
+
+        verify(restaurantePersistencePort).existeRestaurantePorId(1L);
         verify(platoPersistencePort,never()).guardarPlato(plato);
     }
 
 
+    @Test
+    void actualizarPlato_correectamente_devuelvePlatoActualizado() {
+        Plato platoActualizado = new Plato("plato",100,
+                "nueva descripcion","http://otro",
+                "categoria",true,1L);
+
+        when(platoPersistencePort.actualizarPlato(plato,1L)).thenReturn(platoActualizado);
+
+        Plato resultado = platoUseCase.actualizarPlato(plato,1L);
+
+        assertEquals(platoActualizado,resultado);
+        verify(platoPersistencePort).actualizarPlato(plato,1L);
+    }
 }

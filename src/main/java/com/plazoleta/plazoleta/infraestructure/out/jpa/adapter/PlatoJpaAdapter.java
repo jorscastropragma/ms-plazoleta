@@ -2,12 +2,10 @@ package com.plazoleta.plazoleta.infraestructure.out.jpa.adapter;
 
 import com.plazoleta.plazoleta.domain.model.Plato;
 import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
-import com.plazoleta.plazoleta.domain.exception.RestauranteNoEncontradoException;
 import com.plazoleta.plazoleta.infraestructure.exception.PlatoNoEncontradoException;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.PlatoEntity;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.PlatoEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IPlatoRepository;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IRestauranteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
