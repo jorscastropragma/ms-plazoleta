@@ -37,7 +37,8 @@ public class ControllerAdvisor {
             NombreRestauranteInvalidoException.class,
             NoEsPropietarioException.class,
             UsuarioNoEncontradoException.class,
-            RestauranteNoEncontradoException.class
+            RestauranteNoEncontradoException.class,
+            PlatoNoEncontradoException.class
     })
     public ResponseEntity<Map<String, String>> plazoletaException(RuntimeException  ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

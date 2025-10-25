@@ -25,4 +25,9 @@ public class PlatoUseCase implements IPlatoServicePort {
         plato.setActivo(true);
         platoPersistencePort.guardarPlato(plato);
     }
+
+    @Override
+    public Plato actualizarPlato(Plato plato, Long id) {
+        return platoPersistencePort.actualizarPlato(plato,id);
+    }
 }
