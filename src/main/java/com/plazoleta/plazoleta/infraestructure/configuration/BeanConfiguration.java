@@ -15,6 +15,8 @@ import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.PlatoEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.RestauranteEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IPlatoRepository;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IRestauranteRepository;
+import com.plazoleta.plazoleta.infraestructure.out.restconsumer.adapter.UsuarioRestConsumerAdapter;
+import com.plazoleta.plazoleta.infraestructure.out.restconsumer.feign.UsuarioFeignClient;
 import com.plazoleta.plazoleta.infraestructure.out.restconsumer.mapper.UsuarioDtoRestConsumerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,15 +29,19 @@ public class BeanConfiguration {
 
     private final IRestauranteRepository iRestauranteRepository;
     private final RestauranteEntityMapper restauranteEntityMapper;
-    private final RestTemplate restTemplate;
+    private final UsuarioFeignClient usuarioFeignClient;
     private final UsuarioDtoRestConsumerMapper usuarioDtoRestConsumerMapper;
-    private final IUsuarioPersistencePort iUsuarioPersistencePort;
     private final IPlatoRepository iPlatoRepository;
     private final PlatoEntityMapper platoEntityMapper;
 
     @Bean
+    public IUsuarioPersistencePort iUsuarioPersistencePort() {
+        return new UsuarioRestConsumerAdapter(usuarioFeignClient, usuarioDtoRestConsumerMapper);
+    }
+
+    @Bean
     public IRestauranteValidador  restauranteValidador() {
-        return new RestauranteValidador(iUsuarioPersistencePort);
+        return new RestauranteValidador(iUsuarioPersistencePort());
     }
 
     @Bean

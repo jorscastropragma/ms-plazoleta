@@ -1,7 +1,7 @@
 package com.plazoleta.plazoleta.infraestructure.out.restconsumer.mapper;
 
 import com.plazoleta.plazoleta.domain.model.Usuario;
-import com.plazoleta.plazoleta.infraestructure.out.restconsumer.dto.UsuarioRequest;
+import com.plazoleta.plazoleta.infraestructure.out.restconsumer.dto.UsuarioInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -9,5 +9,5 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface UsuarioDtoRestConsumerMapper {
-    Usuario toUsuario(UsuarioRequest usuarioRequest);
+    Usuario toUsuario(UsuarioInfo usuarioRequest);
 }

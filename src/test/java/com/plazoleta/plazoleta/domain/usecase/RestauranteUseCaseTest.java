@@ -51,7 +51,7 @@ class RestauranteUseCaseTest {
         restaurante.setNombre("124545");
 
         doThrow(new NombreRestauranteInvalidoException("Nombre del restaurante invalido"))
-                .when(restauranteValidador).validarNombreRestaurante("12345");
+                .when(restauranteValidador).validarNombreRestaurante("124545");
 
         NombreRestauranteInvalidoException exception = assertThrows(NombreRestauranteInvalidoException.class, () -> {
             restauranteUseCase.guardarRestaurante(restaurante);
@@ -59,7 +59,7 @@ class RestauranteUseCaseTest {
 
         assertEquals("Nombre del restaurante invalido",exception.getMessage());
 
-        verify(restauranteValidador).validarNombreRestaurante("12345");
+        verify(restauranteValidador).validarNombreRestaurante("124545");
         verify(restauranteValidador,never()).validarPropietarioRestaurante(anyLong());
         verify(restaurantePersistencePort,never()).guardarRestaurante(restaurante);
     }
