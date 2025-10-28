@@ -1,7 +1,5 @@
 package com.plazoleta.plazoleta.infraestructure.out.security;
 
-
-import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.ISeguridadContextPort;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.PlatoEntity;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.RestauranteEntity;
