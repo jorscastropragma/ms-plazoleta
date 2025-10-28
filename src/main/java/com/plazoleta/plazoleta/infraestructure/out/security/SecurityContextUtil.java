@@ -24,9 +24,6 @@ public class SecurityContextUtil implements ISeguridadContextPort {
         RestauranteEntity restaurante = restauranteRepository.getReferenceById(idRestaurante);
         UsuarioInfo usuario = usuarioFeignClient.obtenerUsuarioPorId(restaurante.getIdUsuario());
 
-        if (usuario.getCorreo().equals(correoAutenticado)){
-            return true;
-        }
-        return false;
+        return usuario.getCorreo().equals(correoAutenticado);
     }
 }

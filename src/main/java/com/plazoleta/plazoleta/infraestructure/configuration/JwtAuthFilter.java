@@ -9,9 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -44,12 +42,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 new SimpleGrantedAuthority("ROLE_" + jwtService.obtenerRole(token))
         );
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            if (jwtService.validarToken(token)){
-                UsernamePasswordAuthenticationToken autenticacion =
-                        new UsernamePasswordAuthenticationToken(username, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(autenticacion);
-            }
+        if (username != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null &&
+                    Boolean.TRUE.equals(jwtService.validarToken(token))){
+
+            UsernamePasswordAuthenticationToken autenticacion =
+                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(autenticacion);
+
         }
         filterChain.doFilter(request, response);
     }
