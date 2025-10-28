@@ -1,5 +1,6 @@
 package com.plazoleta.plazoleta.infraestructure.input.rest;
 
+import com.plazoleta.plazoleta.aplication.dto.PlatoEstadoRequest;
 import com.plazoleta.plazoleta.aplication.dto.PlatoPrecioDescripcionRequest;
 import com.plazoleta.plazoleta.aplication.dto.PlatoRequest;
 import com.plazoleta.plazoleta.aplication.dto.PlatoResponse;
@@ -53,6 +54,19 @@ public class PlatoRestController {
     @PatchMapping("/{id}")
     public ResponseEntity<PlatoResponse> actualizarPlato(@PathVariable Long id, @Valid @RequestBody PlatoPrecioDescripcionRequest platoRequest){
         return ResponseEntity.ok(iPlatoHandler.actualizarPlato(platoRequest,id));
+    }
+
+    @Operation(summary = "Cambiar estado plato",
+            description = "Activar o desactivar plato, solo el propietario puede hacerlo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PlatoResponse.class))),
+            @ApiResponse(responseCode = "400",content = @Content(mediaType = "application/json"))
+    })
+    @PatchMapping("/{id}/estado")
+    public ResponseEntity<PlatoResponse> cambiarEstadoPlato(@PathVariable Long id, @Valid @RequestBody PlatoEstadoRequest platoRequest){
+        return ResponseEntity.ok(iPlatoHandler.cambiarEstadoPlato(platoRequest,id));
     }
 
 }

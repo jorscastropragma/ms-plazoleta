@@ -27,7 +27,7 @@ public class PlatoUseCase implements IPlatoServicePort {
         if (!restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())){
             throw new RestauranteNoEncontradoException("Restaurante no encontrado.");
         }
-        if (!seguiridadContextPort.usuarioAutenticadoEsPropietario(plato.getIdRestaurante())){
+        if (!seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante())){
             throw new NoEsPropietarioException("No es propietario del restaurante.");
         }
         plato.setActivo(true);
@@ -36,8 +36,8 @@ public class PlatoUseCase implements IPlatoServicePort {
 
     @Override
     public Plato actualizarPlato(Plato plato, Long id) {
-        if (!seguiridadContextPort.usuarioAutenticadoEsPropietario(plato.getIdRestaurante())){
-            throw new NoEsPropietarioException("No es propietario del restaurante.");
+        if (!seguiridadContextPort.esPropietarioDePlato(id)){
+            throw new NoEsPropietarioException("No es propietario del plato.");
         }
         return platoPersistencePort.actualizarPlato(plato,id);
     }

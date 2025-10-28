@@ -61,7 +61,7 @@ public class BeanConfiguration {
     }
 
     public ISeguridadContextPort seguridadContextPort(){
-        return new SecurityContextUtil(usuarioFeignClient,iRestauranteRepository);
+        return new SecurityContextUtil(usuarioFeignClient,iRestauranteRepository,iPlatoRepository);
     }
 
     @Bean
