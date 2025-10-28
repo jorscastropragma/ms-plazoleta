@@ -34,14 +34,23 @@ public class ControllerAdvisor {
     }
 
     @ExceptionHandler({
-            NombreRestauranteInvalidoException.class,
-            NoEsPropietarioException.class,
-            UsuarioNoEncontradoException.class,
             RestauranteNoEncontradoException.class,
             PlatoNoEncontradoException.class
     })
     public ResponseEntity<Map<String, String>> plazoletaException(RuntimeException  ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
+    }
+
+    @ExceptionHandler(NombreRestauranteInvalidoException.class)
+    public ResponseEntity<Map<String, String>> nombreRestauranteInvalidoException(NombreRestauranteInvalidoException  ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
+    }
+
+    @ExceptionHandler(NoEsPropietarioException.class)
+    public ResponseEntity<Map<String, String>> noEsPropietarioException(NoEsPropietarioException  ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
     }
 

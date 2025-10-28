@@ -1,9 +1,11 @@
 package com.plazoleta.plazoleta.domain.usecase;
 
+import com.plazoleta.plazoleta.domain.exception.NoEsPropietarioException;
 import com.plazoleta.plazoleta.domain.exception.RestauranteNoEncontradoException;
 import com.plazoleta.plazoleta.domain.model.Plato;
 import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
+import com.plazoleta.plazoleta.domain.spi.ISeguridadContextPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +24,9 @@ class PlatoUseCaseTest {
     private IPlatoPersistencePort platoPersistencePort;
     @Mock
     IRestaurantePersistencePort restaurantePersistencePort;
+    @Mock
+    private ISeguridadContextPort seguiridadContextPort;
+
     @InjectMocks
     private PlatoUseCase platoUseCase;
 
@@ -29,7 +34,7 @@ class PlatoUseCaseTest {
     void setUp() {
         plato = new Plato("plato",100,
                 "plato desc", "http://logo.jpg",
-                "plato categoria",false,1L);
+                1L,false,1L);
     }
 
     @Test
@@ -37,6 +42,7 @@ class PlatoUseCaseTest {
 
         when(restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())).
                 thenReturn(true);
+        when(seguiridadContextPort.usuarioAutenticadoEsPropietario(plato.getIdRestaurante())).thenReturn(true);
         
         platoUseCase.guardarPlato(plato);
 
@@ -70,13 +76,43 @@ class PlatoUseCaseTest {
     void actualizarPlato_correectamente_devuelvePlatoActualizado() {
         Plato platoActualizado = new Plato("plato",100,
                 "nueva descripcion","http://otro",
-                "categoria",true,1L);
-
+                1L,true,1L);
+        when(seguiridadContextPort.usuarioAutenticadoEsPropietario(plato.getIdRestaurante())).thenReturn(true);
         when(platoPersistencePort.actualizarPlato(plato,1L)).thenReturn(platoActualizado);
 
         Plato resultado = platoUseCase.actualizarPlato(plato,1L);
 
         assertEquals(platoActualizado,resultado);
         verify(platoPersistencePort).actualizarPlato(plato,1L);
+    }
+
+    @Test
+    void guardarPlato_NoEsElPropietario_lanzaExcepcion() {
+        when(restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())).
+                thenReturn(true);
+        when(seguiridadContextPort.usuarioAutenticadoEsPropietario(plato.getIdRestaurante())).thenReturn(false);
+
+        NoEsPropietarioException exception = assertThrows(NoEsPropietarioException.class, () -> {
+            platoUseCase.guardarPlato(plato);
+        });
+
+        assertEquals("No es propietario del restaurante.",exception.getMessage());
+
+        verify(seguiridadContextPort).usuarioAutenticadoEsPropietario(1L);
+        verify(platoPersistencePort,never()).guardarPlato(plato);
+    }
+
+    @Test
+    void actualizarPlato_NoEsElPropietario_lanzaExcepcion() {
+        when(seguiridadContextPort.usuarioAutenticadoEsPropietario(plato.getIdRestaurante())).thenReturn(false);
+
+        NoEsPropietarioException exception = assertThrows(NoEsPropietarioException.class, () -> {
+            platoUseCase.actualizarPlato(plato,1L);
+        });
+
+        assertEquals("No es propietario del restaurante.",exception.getMessage());
+
+        verify(seguiridadContextPort).usuarioAutenticadoEsPropietario(1L);
+        verify(platoPersistencePort,never()).actualizarPlato(plato,1L);
     }
 }

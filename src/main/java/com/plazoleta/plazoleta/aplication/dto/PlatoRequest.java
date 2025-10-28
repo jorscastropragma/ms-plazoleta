@@ -22,8 +22,8 @@ public class PlatoRequest {
     @NotBlank(message = "La url de la imagen es obligatoria.")
     private String urlImagen;
 
-    @NotBlank(message = "La categoria es obligatoria.")
-    private String categoria;
+    @NotNull(message = "La categoria es obligatoria.")
+    private Long idCategoria;
 
     @NotNull(message = "El id del restaurante es obligatorio.")
     private Long idRestaurante;

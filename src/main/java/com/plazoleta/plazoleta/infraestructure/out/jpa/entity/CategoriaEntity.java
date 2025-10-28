@@ -1,24 +1,22 @@
 package com.plazoleta.plazoleta.infraestructure.out.jpa.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "platos")
+@Table(name = "categorias")
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class PlatoEntity {
+public class CategoriaEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private Integer precio;
     private String descripcion;
-    private String urlImagen;
-    private Long idCategoria;
-    private Boolean activo;
-    private Long idRestaurante;
 }
