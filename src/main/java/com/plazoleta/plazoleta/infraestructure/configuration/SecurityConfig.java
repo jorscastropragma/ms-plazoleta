@@ -24,10 +24,11 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/restaurante").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/restaurante/listar").permitAll()
                         .requestMatchers("/swagger-ui.html").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/restaurante").hasRole("ADMINISTRADOR")
                         .requestMatchers("/plato/**").hasRole("PROPIETARIO")
                         .anyRequest().authenticated()
                 )

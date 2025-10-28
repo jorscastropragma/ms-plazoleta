@@ -42,7 +42,10 @@ public class ControllerAdvisor {
                 .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));
     }
 
-    @ExceptionHandler(NombreRestauranteInvalidoException.class)
+    @ExceptionHandler({
+            NombreRestauranteInvalidoException.class,
+            NitRestauranteYaExisteException.class
+    })
     public ResponseEntity<Map<String, String>> nombreRestauranteInvalidoException(NombreRestauranteInvalidoException  ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap(MENSAJE,ex.getLocalizedMessage()));

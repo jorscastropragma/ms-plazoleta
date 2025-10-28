@@ -77,7 +77,7 @@ class PlatoUseCaseTest {
         Plato platoActualizado = new Plato("plato",100,
                 "nueva descripcion","http://otro",
                 1L,true,1L);
-        when(seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante())).thenReturn(true);
+        when(seguiridadContextPort.esPropietarioDePlato(plato.getIdRestaurante())).thenReturn(true);
         when(platoPersistencePort.actualizarPlato(plato,1L)).thenReturn(platoActualizado);
 
         Plato resultado = platoUseCase.actualizarPlato(plato,1L);
@@ -104,15 +104,15 @@ class PlatoUseCaseTest {
 
     @Test
     void actualizarPlato_NoEsElPropietario_lanzaExcepcion() {
-        when(seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante())).thenReturn(false);
+        when(seguiridadContextPort.esPropietarioDePlato(plato.getIdRestaurante())).thenReturn(false);
 
         NoEsPropietarioException exception = assertThrows(NoEsPropietarioException.class, () -> {
             platoUseCase.actualizarPlato(plato,1L);
         });
 
-        assertEquals("No es propietario del restaurante.",exception.getMessage());
+        assertEquals("No es propietario del plato.",exception.getMessage());
 
-        verify(seguiridadContextPort).esPropietarioDeRestaurante(1L);
+        verify(seguiridadContextPort).esPropietarioDePlato(1L);
         verify(platoPersistencePort,never()).actualizarPlato(plato,1L);
     }
 }

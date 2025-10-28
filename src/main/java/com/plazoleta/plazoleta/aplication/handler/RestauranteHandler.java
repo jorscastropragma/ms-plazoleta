@@ -1,9 +1,12 @@
 package com.plazoleta.plazoleta.aplication.handler;
 
+import com.plazoleta.plazoleta.aplication.dto.RestauranteListResponse;
 import com.plazoleta.plazoleta.aplication.dto.RestauranteRequest;
 import com.plazoleta.plazoleta.aplication.mapper.RestauranteRequestMapper;
 import com.plazoleta.plazoleta.domain.api.IRestauranteServicePort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,5 +20,10 @@ public class RestauranteHandler implements IRestauranteHandler{
     @Override
     public void guardarRestaurante(RestauranteRequest restauranteRequest) {
         restauranteServicePort.guardarRestaurante(restauranteRequestMapper.toRestaurante(restauranteRequest));
+    }
+
+    @Override
+    public Page<RestauranteListResponse> obtenerRestaurantes(Pageable pageable) {
+        return restauranteRequestMapper.toPageRestauranteResponse(restauranteServicePort.obtenerRestaurantes(pageable));
     }
 }
