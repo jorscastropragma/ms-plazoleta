@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class PlatoRestController {
 
     private final IPlatoHandler iPlatoHandler;
+
     @Operation(summary = "Crear un plato",
                 description = "Crear plato que por defecto queda activo al restaurante seleccionado."
     )

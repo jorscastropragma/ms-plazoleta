@@ -30,4 +30,4 @@ usuario:
 app:
   jwt:
     llave: "8979d62702cf56721c86967eff5b1cb820982de3b45f40f9c12f5762cde6f419"
-    expiracion: 3
+    expiracion: 150

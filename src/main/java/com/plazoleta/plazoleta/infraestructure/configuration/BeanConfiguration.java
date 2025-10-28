@@ -4,6 +4,7 @@ import com.plazoleta.plazoleta.domain.api.IPlatoServicePort;
 import com.plazoleta.plazoleta.domain.api.IRestauranteServicePort;
 import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
+import com.plazoleta.plazoleta.domain.spi.ISeguridadContextPort;
 import com.plazoleta.plazoleta.domain.spi.IUsuarioPersistencePort;
 import com.plazoleta.plazoleta.domain.usecase.PlatoUseCase;
 import com.plazoleta.plazoleta.domain.usecase.RestauranteUseCase;
@@ -18,10 +19,10 @@ import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IRestauranteRe
 import com.plazoleta.plazoleta.infraestructure.out.restconsumer.adapter.UsuarioRestConsumerAdapter;
 import com.plazoleta.plazoleta.infraestructure.out.restconsumer.feign.UsuarioFeignClient;
 import com.plazoleta.plazoleta.infraestructure.out.restconsumer.mapper.UsuarioDtoRestConsumerMapper;
+import com.plazoleta.plazoleta.infraestructure.out.security.SecurityContextUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @RequiredArgsConstructor
@@ -59,8 +60,13 @@ public class BeanConfiguration {
         return new PlatoJpaAdapter(iPlatoRepository,platoEntityMapper);
     }
 
+    public ISeguridadContextPort seguridadContextPort(){
+        return new SecurityContextUtil(usuarioFeignClient,iRestauranteRepository);
+    }
+
     @Bean
     public IPlatoServicePort platoServicePort(){
-        return new PlatoUseCase(platoPersistencePort(),restaurantePersistencePort());
+        return new PlatoUseCase(platoPersistencePort(),restaurantePersistencePort(), seguridadContextPort());
     }
+
 }

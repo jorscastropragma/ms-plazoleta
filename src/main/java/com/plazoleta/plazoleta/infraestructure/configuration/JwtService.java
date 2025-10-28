@@ -49,6 +49,6 @@ public class JwtService {
     }
 
     public String obtenerRole(String token) {
-        return obtenerClaims(token).get("role", String.class);
+        return obtenerClaims(token).get("rol", String.class);
     }
 }
