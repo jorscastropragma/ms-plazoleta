@@ -85,5 +85,16 @@ class RestauranteUseCaseTest {
         verify(restaurantePersistencePort,never()).guardarRestaurante(restaurante);
     }
 
+    @Test
+    void obtenerRestaurantes_correctamente() {
+        Page page = mock(Page.class);
 
+        when(restaurantePersistencePort.obtenerRestaurantes(Pageable.unpaged())).thenReturn(page);
+
+        Page<Restaurante> restaurantesResultado = restauranteUseCase.obtenerRestaurantes(Pageable.unpaged());
+
+        assertEquals(page,restaurantesResultado);
+
+        verify(restaurantePersistencePort).obtenerRestaurantes(Pageable.unpaged());
+    }
 }
