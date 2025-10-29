@@ -2,7 +2,9 @@ package com.plazoleta.plazoleta.domain.usecase;
 
 import com.plazoleta.plazoleta.domain.exception.NoEsPropietarioException;
 import com.plazoleta.plazoleta.domain.exception.RestauranteNoEncontradoException;
+import com.plazoleta.plazoleta.domain.model.Categoria;
 import com.plazoleta.plazoleta.domain.model.Plato;
+import com.plazoleta.plazoleta.domain.spi.ICategoriaPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
 import com.plazoleta.plazoleta.domain.spi.ISeguridadContextPort;
@@ -12,6 +14,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,6 +33,8 @@ class PlatoUseCaseTest {
     IRestaurantePersistencePort restaurantePersistencePort;
     @Mock
     private ISeguridadContextPort seguiridadContextPort;
+    @Mock
+    private ICategoriaPersistencePort categoriaPersistencePort;
 
     @InjectMocks
     private PlatoUseCase platoUseCase;
@@ -34,7 +43,7 @@ class PlatoUseCaseTest {
     void setUp() {
         plato = new Plato("plato",100,
                 "plato desc", "http://logo.jpg",
-                1L,false,1L);
+                1L,"POSTRE",false,1L);
     }
 
     @Test
@@ -76,7 +85,7 @@ class PlatoUseCaseTest {
     void actualizarPlato_correectamente_devuelvePlatoActualizado() {
         Plato platoActualizado = new Plato("plato",100,
                 "nueva descripcion","http://otro",
-                1L,true,1L);
+                1L,"POSTRE",true,1L);
         when(seguiridadContextPort.esPropietarioDePlato(plato.getIdRestaurante())).thenReturn(true);
         when(platoPersistencePort.actualizarPlato(plato,1L)).thenReturn(platoActualizado);
 
@@ -114,5 +123,28 @@ class PlatoUseCaseTest {
 
         verify(seguiridadContextPort).esPropietarioDePlato(1L);
         verify(platoPersistencePort,never()).actualizarPlato(plato,1L);
+    }
+
+    @Test
+    void obtenerPlato_correctamente() {
+        Categoria categoria = new Categoria(1L,"POSTRE","Plato de postre");
+
+        List<Plato> platos = List.of(
+                new Plato("Plato1", 10000, "Desc1", "url1", 1L, null, true, 1L),
+                new Plato("Plato2", 15000, "Desc2", "url2", 1L, null, true, 1L)
+        );
+
+        Page<Plato> page = new PageImpl<>(platos);
+
+        when(platoPersistencePort.obtenerPlatos(Pageable.unpaged(),1L,1L)).thenReturn(page);
+        when(categoriaPersistencePort.obtenerCategoriaPorId(1L)).thenReturn(categoria);
+
+        Page<Plato> platosResultado = platoUseCase.obtenerPlatos(Pageable.unpaged(),1L,1L);
+
+        assertEquals(page.getTotalElements(),platosResultado.getTotalElements());
+        assertEquals(page.getTotalPages(),platosResultado.getTotalPages());
+
+        verify(platoPersistencePort).obtenerPlatos(Pageable.unpaged(),1L,1L);
+        verify(categoriaPersistencePort,times(platosResultado.getSize())).obtenerCategoriaPorId(1L);
     }
 }
