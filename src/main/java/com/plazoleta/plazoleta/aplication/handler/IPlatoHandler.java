@@ -1,7 +1,6 @@
 package com.plazoleta.plazoleta.aplication.handler;
 
 import com.plazoleta.plazoleta.aplication.dto.*;
-import com.plazoleta.plazoleta.domain.model.Plato;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

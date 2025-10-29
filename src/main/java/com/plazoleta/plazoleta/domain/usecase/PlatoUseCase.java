@@ -3,7 +3,6 @@ package com.plazoleta.plazoleta.domain.usecase;
 import com.plazoleta.plazoleta.domain.api.IPlatoServicePort;
 import com.plazoleta.plazoleta.domain.exception.NoEsPropietarioException;
 import com.plazoleta.plazoleta.domain.exception.RestauranteNoEncontradoException;
-import com.plazoleta.plazoleta.domain.model.Categoria;
 import com.plazoleta.plazoleta.domain.model.Plato;
 import com.plazoleta.plazoleta.domain.spi.ICategoriaPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
