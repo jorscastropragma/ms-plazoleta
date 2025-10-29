@@ -35,7 +35,8 @@ public class ControllerAdvisor {
 
     @ExceptionHandler({
             RestauranteNoEncontradoException.class,
-            PlatoNoEncontradoException.class
+            PlatoNoEncontradoException.class,
+            CategoriaPlatoNoEncontradoException.class
     })
     public ResponseEntity<Map<String, String>> plazoletaException(RuntimeException  ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)

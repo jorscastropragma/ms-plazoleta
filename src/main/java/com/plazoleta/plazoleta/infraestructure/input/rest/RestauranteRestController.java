@@ -48,7 +48,6 @@ public class RestauranteRestController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //listar todos los restaurantes pageable
     @Operation(summary = "Listar todos los restaurantes",
             description = "Listar todos los restaurantes paginados")
     @ApiResponses(

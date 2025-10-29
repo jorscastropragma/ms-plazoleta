@@ -1,9 +1,6 @@
 package com.plazoleta.plazoleta.infraestructure.input.rest;
 
-import com.plazoleta.plazoleta.aplication.dto.PlatoEstadoRequest;
-import com.plazoleta.plazoleta.aplication.dto.PlatoPrecioDescripcionRequest;
-import com.plazoleta.plazoleta.aplication.dto.PlatoRequest;
-import com.plazoleta.plazoleta.aplication.dto.PlatoResponse;
+import com.plazoleta.plazoleta.aplication.dto.*;
 import com.plazoleta.plazoleta.aplication.handler.IPlatoHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,6 +68,24 @@ public class PlatoRestController {
     @PatchMapping("/{id}/estado")
     public ResponseEntity<PlatoResponse> cambiarEstadoPlato(@PathVariable Long id, @Valid @RequestBody PlatoEstadoRequest platoRequest){
         return ResponseEntity.ok(iPlatoHandler.cambiarEstadoPlato(platoRequest,id));
+    }
+
+    @Operation(summary = "Listar todos los platos de un restaurante",
+            description = "Listar todos los plataos de un restaurante. paginable con filtro por categoria")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = PlatoCategoriaResponse.class)
+                            ))
+            }
+    )
+    @GetMapping("/restaurante/{idRestaurante}")
+    public Page<PlatoCategoriaResponse> listarPlatos(@PathVariable Long idRestaurante,
+                                                     @RequestParam(required = false) Long idCategoria ,
+                                                     @PageableDefault(sort = "nombre",direction = Sort.Direction.ASC) Pageable pageable){
+        return iPlatoHandler.obtenerPlatos(pageable,idRestaurante,idCategoria);
     }
 
 }

@@ -3,6 +3,7 @@ package com.plazoleta.plazoleta.infraestructure.out.jpa.mapper;
 import com.plazoleta.plazoleta.domain.model.Plato;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.PlatoEntity;
 import org.mapstruct.*;
+import org.springframework.data.domain.Page;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -14,4 +15,8 @@ public interface PlatoEntityMapper {
     @Mapping(target = "id", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updatePlatoEntityFromPlato(@MappingTarget PlatoEntity platoEntity, Plato plato);
+
+    default Page<Plato> toPagePlato(Page<PlatoEntity> page){
+        return page.map(this::toPlato);
+    }
 }

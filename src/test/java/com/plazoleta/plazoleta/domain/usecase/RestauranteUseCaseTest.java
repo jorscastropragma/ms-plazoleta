@@ -12,7 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -85,7 +88,12 @@ class RestauranteUseCaseTest {
 
     @Test
     void obtenerRestaurantes_correctamente() {
-        Page page = mock(Page.class);
+        List<Restaurante> restaurantes = List.of(
+                new Restaurante("Restaurante 1", "12345", "Dirección 1", "3111111111", "http://logo1.jpg", 1L),
+                new Restaurante("Restaurante 2", "12346", "Dirección 2", "3222222222", "http://logo2.jpg", 2L)
+        );
+
+        Page<Restaurante> page = new PageImpl<>(restaurantes);
 
         when(restaurantePersistencePort.obtenerRestaurantes(Pageable.unpaged())).thenReturn(page);
 

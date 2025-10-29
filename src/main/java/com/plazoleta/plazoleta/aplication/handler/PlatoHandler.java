@@ -1,15 +1,11 @@
 package com.plazoleta.plazoleta.aplication.handler;
 
-import com.plazoleta.plazoleta.aplication.dto.PlatoEstadoRequest;
-import com.plazoleta.plazoleta.aplication.dto.PlatoPrecioDescripcionRequest;
-import com.plazoleta.plazoleta.aplication.dto.PlatoRequest;
-import com.plazoleta.plazoleta.aplication.dto.PlatoResponse;
-import com.plazoleta.plazoleta.aplication.mapper.PlatoEstadoMapper;
-import com.plazoleta.plazoleta.aplication.mapper.PlatoPrecioDescripcionRequestMapper;
-import com.plazoleta.plazoleta.aplication.mapper.PlatoRequestMapper;
-import com.plazoleta.plazoleta.aplication.mapper.PlatoResponseMapper;
+import com.plazoleta.plazoleta.aplication.dto.*;
+import com.plazoleta.plazoleta.aplication.mapper.*;
 import com.plazoleta.plazoleta.domain.api.IPlatoServicePort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +17,7 @@ public class PlatoHandler implements IPlatoHandler{
     private final PlatoRequestMapper platoRequestMapper;
     private final PlatoPrecioDescripcionRequestMapper platoPrecioDescripcionRequestMapper;
     private final PlatoEstadoMapper platoEstadoMapper;
+    private final PlatoCategoriaMapper platoCategoriaMapper;
 
     @Override
     public void guardarPlato(PlatoRequest platoRequest) {
@@ -39,5 +36,12 @@ public class PlatoHandler implements IPlatoHandler{
         return platoResponseMapper.toPlatoResponse(
                 platoServicePort.actualizarPlato(
                         platoEstadoMapper.toPlato(platoRequest),idPlato));
+    }
+
+    @Override
+    public Page<PlatoCategoriaResponse> obtenerPlatos(Pageable pageable, Long idRestaurante, Long idCategoria) {
+        return platoCategoriaMapper.toPagePlatoCategoriaResponse(
+                platoServicePort.obtenerPlatos(
+                        pageable,idRestaurante,idCategoria));
     }
 }
