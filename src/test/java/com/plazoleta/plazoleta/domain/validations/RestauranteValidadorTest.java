@@ -1,7 +1,6 @@
 package com.plazoleta.plazoleta.domain.validations;
 
-import com.plazoleta.plazoleta.domain.exception.NoEsPropietarioException;
-import com.plazoleta.plazoleta.domain.exception.NombreRestauranteInvalidoException;
+import com.plazoleta.plazoleta.domain.exception.ReglaDeNegocioInvalidaException;
 import com.plazoleta.plazoleta.domain.model.Usuario;
 import com.plazoleta.plazoleta.domain.spi.IUsuarioPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,7 +50,7 @@ class RestauranteValidadorTest {
     void validarNombreRestaurante_CuandoNombreNoEsValido_TieneSoloNumeros() {
         String nombreRestaurante = "3242343242";
 
-        NombreRestauranteInvalidoException exception = assertThrows(NombreRestauranteInvalidoException.class,
+        ReglaDeNegocioInvalidaException exception = assertThrows(ReglaDeNegocioInvalidaException.class,
                 () -> validador.validarNombreRestaurante(nombreRestaurante));
 
         assertEquals("Nombre del restaurante invalido",exception.getMessage());
@@ -73,10 +72,10 @@ class RestauranteValidadorTest {
 
         when(usuarioPersistencePort.obtenerUsuarioPorId(idUsuario)).thenReturn(usuario);
 
-        NoEsPropietarioException exception = assertThrows(NoEsPropietarioException.class, () ->
+        ReglaDeNegocioInvalidaException exception = assertThrows(ReglaDeNegocioInvalidaException.class, () ->
                 validador.validarPropietarioRestaurante(idUsuario));
 
-        assertEquals("Usuario invalido.",exception.getMessage());
+        assertEquals("No es el propietario del restaurante.",exception.getMessage());
 
     }
 }

@@ -5,7 +5,6 @@ import com.plazoleta.plazoleta.domain.api.IRestauranteServicePort;
 import com.plazoleta.plazoleta.domain.spi.*;
 import com.plazoleta.plazoleta.domain.usecase.PlatoUseCase;
 import com.plazoleta.plazoleta.domain.usecase.RestauranteUseCase;
-import com.plazoleta.plazoleta.domain.validations.IRestauranteValidador;
 import com.plazoleta.plazoleta.domain.validations.RestauranteValidador;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.adapter.CategoriaJpaAdapter;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.adapter.PlatoJpaAdapter;
@@ -43,18 +42,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public IRestauranteValidador  restauranteValidador() {
-        return new RestauranteValidador(iUsuarioPersistencePort());
-    }
-
-    @Bean
     public IRestaurantePersistencePort restaurantePersistencePort() {
         return new RestauranteJpaAdapter(iRestauranteRepository, restauranteEntityMapper);
     }
 
     @Bean
     public IRestauranteServicePort restauranteServicePort() {
-        return new RestauranteUseCase(restaurantePersistencePort(), restauranteValidador());
+        return new RestauranteUseCase(restaurantePersistencePort(), iUsuarioPersistencePort());
     }
 
     @Bean

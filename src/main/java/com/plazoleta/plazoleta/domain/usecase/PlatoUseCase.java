@@ -1,8 +1,8 @@
 package com.plazoleta.plazoleta.domain.usecase;
 
 import com.plazoleta.plazoleta.domain.api.IPlatoServicePort;
-import com.plazoleta.plazoleta.domain.exception.NoEsPropietarioException;
-import com.plazoleta.plazoleta.domain.exception.RestauranteNoEncontradoException;
+import com.plazoleta.plazoleta.domain.exception.MensajeDomainException;
+import com.plazoleta.plazoleta.domain.exception.ReglaDeNegocioInvalidaException;
 import com.plazoleta.plazoleta.domain.model.Plato;
 import com.plazoleta.plazoleta.domain.spi.ICategoriaPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
@@ -31,10 +31,10 @@ public class PlatoUseCase implements IPlatoServicePort {
     @Override
     public void guardarPlato(Plato plato) {
         if (!restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())){
-            throw new RestauranteNoEncontradoException("Restaurante no encontrado.");
+            throw new ReglaDeNegocioInvalidaException(MensajeDomainException.RESTAURANTE_NO_ENCONTRADO.getMensaje());
         }
         if (!seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante())){
-            throw new NoEsPropietarioException("No es propietario del restaurante.");
+            throw new ReglaDeNegocioInvalidaException(MensajeDomainException.NO_ES_EL_PROPIETARIO_DEL_RESTAURANTE.getMensaje());
         }
         plato.setActivo(true);
         platoPersistencePort.guardarPlato(plato);
@@ -43,7 +43,7 @@ public class PlatoUseCase implements IPlatoServicePort {
     @Override
     public Plato actualizarPlato(Plato plato, Long id) {
         if (!seguiridadContextPort.esPropietarioDePlato(id)){
-            throw new NoEsPropietarioException("No es propietario del plato.");
+            throw new ReglaDeNegocioInvalidaException(MensajeDomainException.NO_ES_EL_PROPIETARIO_DEL_PLATO.getMensaje());
         }
         return platoPersistencePort.actualizarPlato(plato,id);
     }

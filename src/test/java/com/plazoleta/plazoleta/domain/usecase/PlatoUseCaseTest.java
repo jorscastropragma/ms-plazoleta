@@ -1,7 +1,6 @@
 package com.plazoleta.plazoleta.domain.usecase;
 
-import com.plazoleta.plazoleta.domain.exception.NoEsPropietarioException;
-import com.plazoleta.plazoleta.domain.exception.RestauranteNoEncontradoException;
+import com.plazoleta.plazoleta.domain.exception.ReglaDeNegocioInvalidaException;
 import com.plazoleta.plazoleta.domain.model.Categoria;
 import com.plazoleta.plazoleta.domain.model.Plato;
 import com.plazoleta.plazoleta.domain.spi.ICategoriaPersistencePort;
@@ -67,8 +66,8 @@ class PlatoUseCaseTest {
         when(restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())).
                 thenReturn(false);
 
-        RestauranteNoEncontradoException exception =
-                assertThrows(RestauranteNoEncontradoException.class,() ->{
+        ReglaDeNegocioInvalidaException exception =
+                assertThrows(ReglaDeNegocioInvalidaException.class,() ->{
             platoUseCase.guardarPlato(plato);
         });
 
@@ -101,11 +100,11 @@ class PlatoUseCaseTest {
                 thenReturn(true);
         when(seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante())).thenReturn(false);
 
-        NoEsPropietarioException exception = assertThrows(NoEsPropietarioException.class, () -> {
+        ReglaDeNegocioInvalidaException exception = assertThrows(ReglaDeNegocioInvalidaException.class, () -> {
             platoUseCase.guardarPlato(plato);
         });
 
-        assertEquals("No es propietario del restaurante.",exception.getMessage());
+        assertEquals("No es el propietario del restaurante.",exception.getMessage());
 
         verify(seguiridadContextPort).esPropietarioDeRestaurante(1L);
         verify(platoPersistencePort,never()).guardarPlato(plato);
@@ -115,11 +114,11 @@ class PlatoUseCaseTest {
     void actualizarPlato_NoEsElPropietario_lanzaExcepcion() {
         when(seguiridadContextPort.esPropietarioDePlato(plato.getIdRestaurante())).thenReturn(false);
 
-        NoEsPropietarioException exception = assertThrows(NoEsPropietarioException.class, () -> {
+        ReglaDeNegocioInvalidaException exception = assertThrows(ReglaDeNegocioInvalidaException.class, () -> {
             platoUseCase.actualizarPlato(plato,1L);
         });
 
-        assertEquals("No es propietario del plato.",exception.getMessage());
+        assertEquals("No es el propietario del plato.",exception.getMessage());
 
         verify(seguiridadContextPort).esPropietarioDePlato(1L);
         verify(platoPersistencePort,never()).actualizarPlato(plato,1L);

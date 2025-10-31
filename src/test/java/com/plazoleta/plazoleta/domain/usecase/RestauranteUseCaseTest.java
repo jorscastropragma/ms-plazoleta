@@ -1,20 +1,21 @@
 package com.plazoleta.plazoleta.domain.usecase;
 
-import com.plazoleta.plazoleta.domain.exception.NoEsPropietarioException;
-import com.plazoleta.plazoleta.domain.exception.NombreRestauranteInvalidoException;
+import com.plazoleta.plazoleta.domain.exception.ReglaDeNegocioInvalidaException;
 import com.plazoleta.plazoleta.domain.model.Restaurante;
+import com.plazoleta.plazoleta.domain.model.Usuario;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
-import com.plazoleta.plazoleta.domain.validations.IRestauranteValidador;
+import com.plazoleta.plazoleta.domain.spi.IUsuarioPersistencePort;
+import com.plazoleta.plazoleta.domain.validations.RestauranteValidador;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,13 +30,16 @@ class RestauranteUseCaseTest {
     private IRestaurantePersistencePort restaurantePersistencePort;
 
     @Mock
-    private IRestauranteValidador restauranteValidador;
+    private IUsuarioPersistencePort usuarioPersistencePort;
 
-    @InjectMocks
+    private RestauranteValidador restauranteValidador;
+
     private RestauranteUseCase restauranteUseCase;
 
     @BeforeEach
     void setUp() {
+        restauranteValidador = new RestauranteValidador(usuarioPersistencePort);
+        restauranteUseCase = new RestauranteUseCase(restaurantePersistencePort, usuarioPersistencePort);
         restaurante = new Restaurante("local",
                 "124545","cra 32 -58", "3125896547",
                 "http://logo.jpg",1L);
@@ -43,11 +47,13 @@ class RestauranteUseCaseTest {
 
     @Test
     void guardarRestaurante_correctamente() {
+        Usuario usuario = new Usuario("hector","perez",5464651L,"1546435",
+                LocalDate.now(),"email@email.com","PROPIETARIO");
+
+        when(usuarioPersistencePort.obtenerUsuarioPorId(1L)).thenReturn(usuario);
 
         restauranteUseCase.guardarRestaurante(restaurante);
 
-        verify(restauranteValidador).validarNombreRestaurante("local");
-        verify(restauranteValidador).validarPropietarioRestaurante(1L);
         verify(restaurantePersistencePort).guardarRestaurante(restaurante);
     }
 
@@ -55,34 +61,29 @@ class RestauranteUseCaseTest {
     void guardarRestaurante_CuandoTieneSoloNumerosEnNombre() {
         restaurante.setNombre("124545");
 
-        doThrow(new NombreRestauranteInvalidoException("Nombre del restaurante invalido"))
-                .when(restauranteValidador).validarNombreRestaurante("124545");
-
-        NombreRestauranteInvalidoException exception = assertThrows(NombreRestauranteInvalidoException.class, () -> {
+        ReglaDeNegocioInvalidaException exception = assertThrows(ReglaDeNegocioInvalidaException.class, () -> {
             restauranteUseCase.guardarRestaurante(restaurante);
         });
 
-        assertEquals("Nombre del restaurante invalido",exception.getMessage());
+        assertEquals("El nombre del restaurante es invalido.",exception.getMessage());
 
-        verify(restauranteValidador).validarNombreRestaurante("124545");
-        verify(restauranteValidador,never()).validarPropietarioRestaurante(anyLong());
+
         verify(restaurantePersistencePort,never()).guardarRestaurante(restaurante);
     }
 
     @Test
     void guardarRestaurante_CuandoNoEsUnPropietario(){
+        Usuario usuario = new Usuario("hector","perez",5464651L,"1546435",
+                LocalDate.now(),"email@email.com","ADMINISTRADOR");
 
-        doThrow(new NoEsPropietarioException("Usuario invalido."))
-                .when(restauranteValidador).validarPropietarioRestaurante(1L);
+        when(usuarioPersistencePort.obtenerUsuarioPorId(1L)).thenReturn(usuario);
 
-        NoEsPropietarioException exception = assertThrows(NoEsPropietarioException.class, () -> {
+        ReglaDeNegocioInvalidaException exception = assertThrows(ReglaDeNegocioInvalidaException.class, () -> {
             restauranteUseCase.guardarRestaurante(restaurante);
         });
 
-        assertEquals("Usuario invalido.",exception.getMessage());
+        assertEquals("No es el propietario del restaurante.",exception.getMessage());
 
-        verify(restauranteValidador).validarNombreRestaurante("local");
-        verify(restauranteValidador).validarPropietarioRestaurante(1L);
         verify(restaurantePersistencePort,never()).guardarRestaurante(restaurante);
     }
 

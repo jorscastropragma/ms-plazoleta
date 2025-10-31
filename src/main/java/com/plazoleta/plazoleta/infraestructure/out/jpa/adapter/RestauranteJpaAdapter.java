@@ -1,9 +1,10 @@
 package com.plazoleta.plazoleta.infraestructure.out.jpa.adapter;
 
-import com.plazoleta.plazoleta.domain.exception.RestauranteNoEncontradoException;
 import com.plazoleta.plazoleta.domain.model.Restaurante;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
-import com.plazoleta.plazoleta.infraestructure.exception.NitRestauranteYaExisteException;
+import com.plazoleta.plazoleta.infraestructure.exception.MensajeInfraestructuraException;
+import com.plazoleta.plazoleta.infraestructure.exception.RecursoNoEncontradoException;
+import com.plazoleta.plazoleta.infraestructure.exception.RestriccionRecursoYaExisteException;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.RestauranteEntity;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.RestauranteEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IRestauranteRepository;
@@ -21,7 +22,8 @@ public class RestauranteJpaAdapter implements IRestaurantePersistencePort {
     @Override
     public void guardarRestaurante(Restaurante restaurante) {
         if (restauranteRepository.existsByNit(restaurante.getNit())){
-            throw new NitRestauranteYaExisteException("El NIT ya existe.");
+            throw new RestriccionRecursoYaExisteException(
+                    MensajeInfraestructuraException.NIT_RESTAURANTE_YA_EXISTE.getMensaje());
         }
         restauranteRepository.save(restauranteEntityMapper.toRestauranteEntity(restaurante));
     }
@@ -35,7 +37,7 @@ public class RestauranteJpaAdapter implements IRestaurantePersistencePort {
     public Page<Restaurante> obtenerRestaurantes(Pageable pageable) {
         Page<RestauranteEntity> restaurantes = restauranteRepository.findAll(pageable);
         if (restaurantes.isEmpty()){
-            throw new RestauranteNoEncontradoException("No hay restaurantes registrados.");
+            throw new RecursoNoEncontradoException(MensajeInfraestructuraException.RESTAURANTES_NO_ENCONTRADOS.getMensaje());
         }
         return restauranteEntityMapper.toPageRestaurante(restaurantes);
     }

@@ -3,7 +3,8 @@ package com.plazoleta.plazoleta.domain.usecase;
 import com.plazoleta.plazoleta.domain.api.IRestauranteServicePort;
 import com.plazoleta.plazoleta.domain.model.Restaurante;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
-import com.plazoleta.plazoleta.domain.validations.IRestauranteValidador;
+import com.plazoleta.plazoleta.domain.spi.IUsuarioPersistencePort;
+import com.plazoleta.plazoleta.domain.validations.RestauranteValidador;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,12 +12,13 @@ public class RestauranteUseCase implements IRestauranteServicePort {
 
     private final IRestaurantePersistencePort restaurantePersistencePort;
 
-    private final IRestauranteValidador restauranteValidador;
+    private RestauranteValidador restauranteValidador;
+
 
     public RestauranteUseCase(IRestaurantePersistencePort restaurantePersistencePort,
-                              IRestauranteValidador restauranteValidador) {
+                              IUsuarioPersistencePort usuarioPersistencePort) {
         this.restaurantePersistencePort = restaurantePersistencePort;
-        this.restauranteValidador = restauranteValidador;
+        this.restauranteValidador = new RestauranteValidador(usuarioPersistencePort);
     }
 
     @Override

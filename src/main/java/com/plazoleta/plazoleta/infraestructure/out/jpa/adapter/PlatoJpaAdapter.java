@@ -2,7 +2,8 @@ package com.plazoleta.plazoleta.infraestructure.out.jpa.adapter;
 
 import com.plazoleta.plazoleta.domain.model.Plato;
 import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
-import com.plazoleta.plazoleta.infraestructure.exception.PlatoNoEncontradoException;
+import com.plazoleta.plazoleta.infraestructure.exception.MensajeInfraestructuraException;
+import com.plazoleta.plazoleta.infraestructure.exception.RecursoNoEncontradoException;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.PlatoEntity;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.PlatoEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IPlatoRepository;
@@ -30,7 +31,8 @@ public class PlatoJpaAdapter implements IPlatoPersistencePort {
             platoEntity = platoRepository.getReferenceById(idPlato);
             platoEntityMapper.updatePlatoEntityFromPlato(platoEntity,plato);
         }catch (EntityNotFoundException ex){
-            throw new PlatoNoEncontradoException("El plato no existe");
+            throw new RecursoNoEncontradoException(
+                    MensajeInfraestructuraException.PLATO_NO_ENCONTRADO.getMensaje());
         }
 
         return platoEntityMapper.toPlato(platoRepository.save(platoEntity));
@@ -46,7 +48,7 @@ public class PlatoJpaAdapter implements IPlatoPersistencePort {
             platoEntities = platoRepository.findByIdRestauranteAndIdCategoriaAndActivoTrue(idRestaurante,idCategoria,pageable);
         }
         if (platoEntities.isEmpty()){
-            throw new PlatoNoEncontradoException("No hay platos registrados.");
+            throw new RecursoNoEncontradoException(MensajeInfraestructuraException.PLATOS_NO_ENCONTRADOS.getMensaje());
         }
         return platoEntityMapper.toPagePlato(platoEntities);
     }

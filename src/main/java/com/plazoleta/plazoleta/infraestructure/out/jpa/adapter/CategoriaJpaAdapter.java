@@ -2,7 +2,8 @@ package com.plazoleta.plazoleta.infraestructure.out.jpa.adapter;
 
 import com.plazoleta.plazoleta.domain.model.Categoria;
 import com.plazoleta.plazoleta.domain.spi.ICategoriaPersistencePort;
-import com.plazoleta.plazoleta.infraestructure.exception.CategoriaPlatoNoEncontradoException;
+import com.plazoleta.plazoleta.infraestructure.exception.MensajeInfraestructuraException;
+import com.plazoleta.plazoleta.infraestructure.exception.RecursoNoEncontradoException;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.CategoriaEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.ICategoriaRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,6 @@ public class CategoriaJpaAdapter implements ICategoriaPersistencePort {
     @Override
     public Categoria obtenerCategoriaPorId(Long id) {
         return categoriaEntityMapper.toCategoria(categoriaRepository.findById(id).orElseThrow(() ->
-                new CategoriaPlatoNoEncontradoException("No se encontro categoria con id: " + id)));
+                new RecursoNoEncontradoException(MensajeInfraestructuraException.CATEGORIA_NO_ENCONTRADA.getMensaje())));
     }
 }
