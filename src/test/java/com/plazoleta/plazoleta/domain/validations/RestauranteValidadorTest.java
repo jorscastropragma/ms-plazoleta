@@ -53,7 +53,7 @@ class RestauranteValidadorTest {
         ReglaDeNegocioInvalidaException exception = assertThrows(ReglaDeNegocioInvalidaException.class,
                 () -> validador.validarNombreRestaurante(nombreRestaurante));
 
-        assertEquals("Nombre del restaurante invalido",exception.getMessage());
+        assertEquals("El nombre del restaurante es invalido.",exception.getMessage());
     }
 
     @Test

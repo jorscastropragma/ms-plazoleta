@@ -15,7 +15,7 @@ public class RestauranteEmpleadoJpaAdapter implements IRestauranteEmpleadoPersis
 
     @Override
     public void guardarRestauranteEmpleado(Long idRestaurante, Long idEmpleado) {
-        if (restauranteRepository.existsById(idRestaurante)){
+        if (!restauranteRepository.existsById(idRestaurante)){
             throw new RuntimeException("El restaurante no existe");
         }
         RestauranteEmpleadoEntity restauranteEmpleadoEntity = new RestauranteEmpleadoEntity();
