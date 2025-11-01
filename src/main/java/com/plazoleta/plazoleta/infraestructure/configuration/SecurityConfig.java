@@ -31,6 +31,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/restaurante/listar").permitAll()
                         .requestMatchers("/plato/restaurante/*").permitAll()
+                        .requestMatchers("/pedido/").permitAll()
                         .requestMatchers("/swagger-ui.html").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()

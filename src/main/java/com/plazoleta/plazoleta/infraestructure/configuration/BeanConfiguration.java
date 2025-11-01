@@ -1,24 +1,22 @@
 package com.plazoleta.plazoleta.infraestructure.configuration;
 
+import com.plazoleta.plazoleta.domain.api.IPedidoServicePort;
 import com.plazoleta.plazoleta.domain.api.IPlatoServicePort;
 import com.plazoleta.plazoleta.domain.api.IRestauranteEmpleadoServicePort;
 import com.plazoleta.plazoleta.domain.api.IRestauranteServicePort;
 import com.plazoleta.plazoleta.domain.spi.*;
+import com.plazoleta.plazoleta.domain.usecase.PedidoUseCase;
 import com.plazoleta.plazoleta.domain.usecase.PlatoUseCase;
 import com.plazoleta.plazoleta.domain.usecase.RestauranteEmpleadoUseCase;
 import com.plazoleta.plazoleta.domain.usecase.RestauranteUseCase;
+import com.plazoleta.plazoleta.domain.validations.PedidoValidador;
 import com.plazoleta.plazoleta.domain.validations.RestauranteValidador;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.adapter.CategoriaJpaAdapter;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.adapter.PlatoJpaAdapter;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.adapter.RestauranteEmpleadoJpaAdapter;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.adapter.RestauranteJpaAdapter;
+import com.plazoleta.plazoleta.infraestructure.out.jpa.adapter.*;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.CategoriaEntityMapper;
+import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.PedidoEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.PlatoEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.RestauranteEntityMapper;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.ICategoriaRepository;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IPlatoRepository;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IRestauranteEmpleadoRepository;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IRestauranteRepository;
+import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.*;
 import com.plazoleta.plazoleta.infraestructure.out.restconsumer.adapter.UsuarioRestConsumerAdapter;
 import com.plazoleta.plazoleta.infraestructure.out.restconsumer.feign.UsuarioFeignClient;
 import com.plazoleta.plazoleta.infraestructure.out.restconsumer.mapper.UsuarioDtoRestConsumerMapper;
@@ -40,6 +38,8 @@ public class BeanConfiguration {
     private final CategoriaEntityMapper categoriaEntityMapper;
     private final ICategoriaRepository iCategoriaRepository;
     private final IRestauranteEmpleadoRepository iRestauranteEmpleadoRepository;
+    private final IPedidoRepository pedidoRepository;
+    private final PedidoEntityMapper pedidoEntityMapper;
 
     @Bean
     public IUsuarioPersistencePort iUsuarioPersistencePort() {
@@ -83,6 +83,19 @@ public class BeanConfiguration {
     @Bean
     public IRestauranteEmpleadoServicePort restauranteEmpleadoServicePort(){
         return new RestauranteEmpleadoUseCase(restauranteEmpleadoPersistencePort());
+    }
+
+    public IPedidoPersistencePort pedidoPersistencePort(){
+        return new PedidoJpaAdapter(pedidoRepository,pedidoEntityMapper);
+    }
+
+    @Bean
+    public IPedidoServicePort pedidoServicePort(){
+        return new PedidoUseCase(pedidoPersistencePort(),
+                restaurantePersistencePort(),
+                platoPersistencePort(),
+                new PedidoValidador()
+        );
     }
 
 }

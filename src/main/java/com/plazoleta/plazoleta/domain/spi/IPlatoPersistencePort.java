@@ -8,4 +8,5 @@ public interface IPlatoPersistencePort {
     void guardarPlato(Plato plato);
     Plato actualizarPlato(Plato plato, Long idPlato);
     Page<Plato> obtenerPlatos(Pageable pageable, Long idRestaurante, Long idCategoria);
+    Plato obtenerPlatoPorId(Long idPlato);
 }
