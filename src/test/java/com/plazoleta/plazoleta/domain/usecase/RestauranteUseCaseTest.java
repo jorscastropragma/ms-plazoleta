@@ -32,13 +32,10 @@ class RestauranteUseCaseTest {
     @Mock
     private IUsuarioPersistencePort usuarioPersistencePort;
 
-    private RestauranteValidador restauranteValidador;
-
     private RestauranteUseCase restauranteUseCase;
 
     @BeforeEach
     void setUp() {
-        restauranteValidador = new RestauranteValidador(usuarioPersistencePort);
         restauranteUseCase = new RestauranteUseCase(restaurantePersistencePort, usuarioPersistencePort);
         restaurante = new Restaurante("local",
                 "124545","cra 32 -58", "3125896547",

@@ -10,7 +10,6 @@ import com.plazoleta.plazoleta.domain.usecase.PlatoUseCase;
 import com.plazoleta.plazoleta.domain.usecase.RestauranteEmpleadoUseCase;
 import com.plazoleta.plazoleta.domain.usecase.RestauranteUseCase;
 import com.plazoleta.plazoleta.domain.validations.PedidoValidador;
-import com.plazoleta.plazoleta.domain.validations.RestauranteValidador;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.adapter.*;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.CategoriaEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.PedidoEntityMapper;

@@ -1,7 +1,6 @@
 package com.plazoleta.plazoleta.infraestructure.out.jpa.mapper;
 
 import com.plazoleta.plazoleta.domain.model.Pedido;
-import com.plazoleta.plazoleta.domain.model.PedidoPlato;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.PedidoEntity;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.PedidoPlatoEntity;
 import org.mapstruct.*;

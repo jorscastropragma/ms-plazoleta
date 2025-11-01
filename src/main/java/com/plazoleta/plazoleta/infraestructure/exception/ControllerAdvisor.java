@@ -1,7 +1,6 @@
 package com.plazoleta.plazoleta.infraestructure.exception;
 
 import com.plazoleta.plazoleta.domain.exception.ReglaDeNegocioInvalidaException;
-import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

@@ -14,8 +14,8 @@ import java.util.Map;
 public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final String MENSAJE = "Token inválido o ausente.";
-    private final String CODIGO = "TOKEN_INVALIDO_O_AUSENTE";
+    private static final String MENSAJE = "Token inválido o ausente.";
+    private static final String CODIGO = "TOKEN_INVALIDO_O_AUSENTE";
 
     @Override
     public void commence(HttpServletRequest request,
