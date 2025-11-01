@@ -25,4 +25,15 @@ public class RestauranteEmpleadoJpaAdapter implements IRestauranteEmpleadoPersis
         restauranteEmpleadoEntity.setIdEmpleado(idEmpleado);
         restauranteEmpleadoRepository.save(restauranteEmpleadoEntity);
     }
+
+    @Override
+    public Long obtenerIdRestaurantePorEmpleado(Long idEmpleado) {
+        RestauranteEmpleadoEntity restauranteEmpleadoEntity =
+                restauranteEmpleadoRepository.findByIdEmpleado(idEmpleado).
+                        orElseThrow(
+                                ()-> new RecursoNoEncontradoException(
+                                        MensajeInfraestructuraException.RESTAURANTES_NO_ENCONTRADOS.getMensaje())
+                        );
+        return restauranteEmpleadoEntity.getIdRestaurante();
+    }
 }

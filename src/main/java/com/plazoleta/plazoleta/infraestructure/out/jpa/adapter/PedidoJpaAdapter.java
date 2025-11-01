@@ -6,6 +6,8 @@ import com.plazoleta.plazoleta.domain.spi.IPedidoPersistencePort;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.PedidoEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IPedidoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.EnumSet;
 
@@ -24,4 +26,11 @@ public class PedidoJpaAdapter implements IPedidoPersistencePort {
     public boolean existePedidoActivoPorCliente(Long idCliente, EnumSet<Estado> estadosBloqueantes) {
         return pedidoRepository.existsPedidoActivoPorCliente(idCliente, estadosBloqueantes);
     }
+
+    @Override
+    public Page<Pedido> obtenerPedidos(Long idRestaurante, Estado estado, Pageable pageable) {
+        return pedidoEntityMapper.toPagePedido(pedidoRepository.findAllByidRestauranteAndEstado(idRestaurante,estado,pageable));
+    }
+
+
 }

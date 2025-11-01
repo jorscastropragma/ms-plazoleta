@@ -15,4 +15,5 @@ public class RestauranteEmpleadoUseCase implements IRestauranteEmpleadoServicePo
     public void guardarRestauranteEmpleado(Long idRestaurante, Long idEmpleado) {
         restauranteEmpleadoPersistencePort.guardarRestauranteEmpleado(idRestaurante, idEmpleado);
     }
+
 }

@@ -55,10 +55,7 @@ public class PlatoJpaAdapter implements IPlatoPersistencePort {
 
     @Override
     public Plato obtenerPlatoPorId(Long idPlato) {
-        try {
-            return platoEntityMapper.toPlato(platoRepository.getReferenceById(idPlato));
-        }catch (EntityNotFoundException ex){
-            return null;
-        }
+        PlatoEntity platoEntity = platoRepository.findById(idPlato).orElse(null);
+        return platoEntityMapper.toPlato(platoEntity);
     }
 }

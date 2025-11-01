@@ -1,13 +1,17 @@
 package com.plazoleta.plazoleta.domain.usecase;
 
 import com.plazoleta.plazoleta.domain.api.IPedidoServicePort;
+import com.plazoleta.plazoleta.domain.exception.MensajeDomainException;
+import com.plazoleta.plazoleta.domain.exception.ReglaDeNegocioInvalidaException;
 import com.plazoleta.plazoleta.domain.model.Estado;
 import com.plazoleta.plazoleta.domain.model.Pedido;
 import com.plazoleta.plazoleta.domain.spi.IPedidoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
+import com.plazoleta.plazoleta.domain.spi.IRestauranteEmpleadoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
 import com.plazoleta.plazoleta.domain.validations.PedidoValidador;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 public class PedidoUseCase implements IPedidoServicePort {
@@ -16,15 +20,18 @@ public class PedidoUseCase implements IPedidoServicePort {
     private final IRestaurantePersistencePort restaurantePersistencePort;
     private final IPlatoPersistencePort platoPersistencePort;
     private final PedidoValidador pedidoValidador;
+    private final IRestauranteEmpleadoPersistencePort restauranteEmpleadoPersistencePort;
 
     public PedidoUseCase(IPedidoPersistencePort pedidoPersistencePort,
                          IRestaurantePersistencePort restaurantePersistencePort,
                          IPlatoPersistencePort platoPersistencePort,
-                         PedidoValidador pedidoValidador) {
+                         PedidoValidador pedidoValidador,
+                         IRestauranteEmpleadoPersistencePort restauranteEmpleadoPersistencePort) {
         this.pedidoPersistencePort = pedidoPersistencePort;
         this.restaurantePersistencePort = restaurantePersistencePort;
         this.platoPersistencePort = platoPersistencePort;
         this.pedidoValidador = pedidoValidador;
+        this.restauranteEmpleadoPersistencePort = restauranteEmpleadoPersistencePort;
     }
 
     @Override
@@ -35,5 +42,15 @@ public class PedidoUseCase implements IPedidoServicePort {
 
         pedido.setEstado(Estado.PENDIENTE);
         pedidoPersistencePort.guardarPedido(pedido);
+    }
+
+    @Override
+    public Page<Pedido> obtenerPedidos(Long idEmpleado, Estado estado, Pageable pageable) {
+        Long idRestaurante = restauranteEmpleadoPersistencePort.obtenerIdRestaurantePorEmpleado(idEmpleado);
+        Page<Pedido> pedidos = pedidoPersistencePort.obtenerPedidos(idRestaurante,estado,pageable);
+        if (pedidos.isEmpty() && pageable.getPageSize() == 1){
+            throw new ReglaDeNegocioInvalidaException(MensajeDomainException.PEDIDO_EXISTE.getMensaje());
+        }
+        return pedidos;
     }
 }

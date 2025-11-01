@@ -6,6 +6,7 @@ import com.plazoleta.plazoleta.domain.model.Pedido;
 import com.plazoleta.plazoleta.domain.model.PedidoPlato;
 import com.plazoleta.plazoleta.domain.spi.IPedidoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
+import com.plazoleta.plazoleta.domain.spi.IRestauranteEmpleadoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
 import com.plazoleta.plazoleta.domain.validations.PedidoValidador;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,8 @@ class PedidoUseCaseTest {
     IPlatoPersistencePort platoPersistencePort;
     @Mock
     PedidoValidador pedidoValidador;
+    @Mock
+    IRestauranteEmpleadoPersistencePort restauranteEmpleadoPersistencePort;
 
     private IPedidoServicePort useCase;
 
@@ -41,7 +44,8 @@ class PedidoUseCaseTest {
                 pedidoPersistencePort,
                 restaurantePersistencePort,
                 platoPersistencePort,
-                pedidoValidador
+                pedidoValidador,
+                restauranteEmpleadoPersistencePort
         );
     }
 

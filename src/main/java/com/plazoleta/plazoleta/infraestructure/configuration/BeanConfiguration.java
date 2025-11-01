@@ -93,7 +93,8 @@ public class BeanConfiguration {
         return new PedidoUseCase(pedidoPersistencePort(),
                 restaurantePersistencePort(),
                 platoPersistencePort(),
-                new PedidoValidador()
+                new PedidoValidador(),
+                restauranteEmpleadoPersistencePort()
         );
     }
 
