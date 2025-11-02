@@ -70,6 +70,22 @@ public class PedidoRestController {
 
     }
 
+    @Operation(summary = "Asignar pedido",
+            description = "Asigna el pedido al empleado que esta autenticado y cambia el estado del pedido a EN_PREPARACION")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = PedidoRequest.class)
+                            )),
+                    @ApiResponse(responseCode = "422",
+                            description = "Error en validacion de los datos",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            ))
+            }
+    )
     @PatchMapping("/asignacion/{idPedido}")
     public ResponseEntity<PedidosResponse> asignarmePedido(@PathVariable Long idPedido){
         return ResponseEntity.ok(pedidoHandler.asignarPedido(idPedido));
