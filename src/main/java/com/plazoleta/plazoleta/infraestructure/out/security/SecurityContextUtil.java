@@ -1,6 +1,8 @@
 package com.plazoleta.plazoleta.infraestructure.out.security;
 
 import com.plazoleta.plazoleta.domain.spi.ISeguridadContextPort;
+import com.plazoleta.plazoleta.infraestructure.exception.MensajeInfraestructuraException;
+import com.plazoleta.plazoleta.infraestructure.exception.RecursoNoEncontradoException;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.PlatoEntity;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.RestauranteEntity;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IPlatoRepository;
@@ -39,5 +41,14 @@ public class SecurityContextUtil implements ISeguridadContextPort {
         UsuarioInfo usuario = usuarioFeignClient.obtenerUsuarioPorId(restaurante.getIdUsuario());
 
         return usuario.getCorreo().equals(correoAutenticado);
+    }
+
+    public Long obtenerIdUsuarioAutenticado(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object details = authentication.getDetails();
+        if (details instanceof Long) {
+            return (Long) details;
+        }
+        throw new RecursoNoEncontradoException(MensajeInfraestructuraException.USUARIO_NO_ENCONTRADO_AUTENTICADO.getMensaje());
     }
 }

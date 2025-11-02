@@ -46,8 +46,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = header.substring(7);
 
         String username = null;
+        Long idEmpleado = null;
         try {
             username = jwtService.obtnerCorreo(token);
+            idEmpleado = jwtService.obtenerIdEmpleado(token);
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
             tokenInvalido(response, MENSAJE_TOKEN_EXPIRADO, CODIGO_TOKEN_EXPIRADO);
             return;
@@ -66,6 +68,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             UsernamePasswordAuthenticationToken autenticacion =
                     new UsernamePasswordAuthenticationToken(username, null, authorities);
+            autenticacion.setDetails(idEmpleado);
             SecurityContextHolder.getContext().setAuthentication(autenticacion);
 
         }

@@ -9,14 +9,16 @@ public class Pedido {
     LocalDateTime fecha;
     Estado estado;
     Long idRestaurante;
+    Long idEmpleadoAsignado;
     List<PedidoPlato> pedidoPlatos;
 
-    public Pedido(Long id, Long idCliente, LocalDateTime fecha, Estado estado, Long idRestaurante, List<PedidoPlato> pedidoPlatos) {
+    public Pedido(Long id, Long idCliente, LocalDateTime fecha, Estado estado, Long idRestaurante,Long idEmpleadoAsignado, List<PedidoPlato> pedidoPlatos) {
         this.id = id;
         this.idCliente = idCliente;
         this.fecha = fecha;
         this.estado = estado;
         this.idRestaurante = idRestaurante;
+        this.idEmpleadoAsignado = idEmpleadoAsignado;
         this.pedidoPlatos = pedidoPlatos;
     }
 
@@ -58,6 +60,14 @@ public class Pedido {
 
     public void setIdRestaurante(Long idRestaurante) {
         this.idRestaurante = idRestaurante;
+    }
+
+    public Long getIdEmpleadoAsignado() {
+        return idEmpleadoAsignado;
+    }
+
+    public void setIdEmpleadoAsignado(Long idEmpleadoAsignado) {
+        this.idEmpleadoAsignado = idEmpleadoAsignado;
     }
 
     public List<PedidoPlato> getPedidoPlatos() {

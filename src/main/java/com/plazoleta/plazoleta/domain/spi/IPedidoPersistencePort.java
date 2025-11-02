@@ -11,4 +11,6 @@ public interface IPedidoPersistencePort {
     void guardarPedido(Pedido pedido);
     boolean existePedidoActivoPorCliente(Long idCliente, EnumSet<Estado> estadosBloqueantes);
     Page<Pedido> obtenerPedidos(Long idRestaurante, Estado estado, Pageable pageable);
+    Pedido asignarPedido(Pedido pedido);
+    Pedido obtenerPedido(Long idPedido);
 }

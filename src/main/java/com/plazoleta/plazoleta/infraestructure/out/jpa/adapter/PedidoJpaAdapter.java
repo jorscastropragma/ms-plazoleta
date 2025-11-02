@@ -3,6 +3,9 @@ package com.plazoleta.plazoleta.infraestructure.out.jpa.adapter;
 import com.plazoleta.plazoleta.domain.model.Estado;
 import com.plazoleta.plazoleta.domain.model.Pedido;
 import com.plazoleta.plazoleta.domain.spi.IPedidoPersistencePort;
+import com.plazoleta.plazoleta.infraestructure.exception.MensajeInfraestructuraException;
+import com.plazoleta.plazoleta.infraestructure.exception.RecursoNoEncontradoException;
+import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.PedidoEntity;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.PedidoEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IPedidoRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,18 @@ public class PedidoJpaAdapter implements IPedidoPersistencePort {
     @Override
     public Page<Pedido> obtenerPedidos(Long idRestaurante, Estado estado, Pageable pageable) {
         return pedidoEntityMapper.toPagePedido(pedidoRepository.findAllByidRestauranteAndEstado(idRestaurante,estado,pageable));
+    }
+
+    @Override
+    public Pedido asignarPedido(Pedido pedido) {
+        return pedidoEntityMapper.toPedido(pedidoRepository.save(pedidoEntityMapper.toPedidoEntity(pedido)));
+    }
+
+    @Override
+    public Pedido obtenerPedido(Long idPedido) {
+        return pedidoRepository.findById(idPedido).map(pedidoEntityMapper::toPedido).orElseThrow(
+                ()-> new RecursoNoEncontradoException(MensajeInfraestructuraException.PEDIDO_NO_ENCONTRADO.getMensaje())
+        );
     }
 
 

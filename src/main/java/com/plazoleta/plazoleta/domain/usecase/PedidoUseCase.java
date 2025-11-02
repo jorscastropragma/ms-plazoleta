@@ -5,10 +5,7 @@ import com.plazoleta.plazoleta.domain.exception.MensajeDomainException;
 import com.plazoleta.plazoleta.domain.exception.ReglaDeNegocioInvalidaException;
 import com.plazoleta.plazoleta.domain.model.Estado;
 import com.plazoleta.plazoleta.domain.model.Pedido;
-import com.plazoleta.plazoleta.domain.spi.IPedidoPersistencePort;
-import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
-import com.plazoleta.plazoleta.domain.spi.IRestauranteEmpleadoPersistencePort;
-import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
+import com.plazoleta.plazoleta.domain.spi.*;
 import com.plazoleta.plazoleta.domain.validations.PedidoValidador;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,17 +18,20 @@ public class PedidoUseCase implements IPedidoServicePort {
     private final IPlatoPersistencePort platoPersistencePort;
     private final PedidoValidador pedidoValidador;
     private final IRestauranteEmpleadoPersistencePort restauranteEmpleadoPersistencePort;
+    private final ISeguridadContextPort seguridadContextPort;
 
     public PedidoUseCase(IPedidoPersistencePort pedidoPersistencePort,
                          IRestaurantePersistencePort restaurantePersistencePort,
                          IPlatoPersistencePort platoPersistencePort,
                          PedidoValidador pedidoValidador,
-                         IRestauranteEmpleadoPersistencePort restauranteEmpleadoPersistencePort) {
+                         IRestauranteEmpleadoPersistencePort restauranteEmpleadoPersistencePort,
+                         ISeguridadContextPort seguridadContextPort) {
         this.pedidoPersistencePort = pedidoPersistencePort;
         this.restaurantePersistencePort = restaurantePersistencePort;
         this.platoPersistencePort = platoPersistencePort;
         this.pedidoValidador = pedidoValidador;
         this.restauranteEmpleadoPersistencePort = restauranteEmpleadoPersistencePort;
+        this.seguridadContextPort = seguridadContextPort;
     }
 
     @Override
@@ -53,4 +53,15 @@ public class PedidoUseCase implements IPedidoServicePort {
         }
         return pedidos;
     }
+
+    @Override
+    public Pedido asignarPedido(Long idPedido) {
+        Pedido pedido = pedidoPersistencePort.obtenerPedido(idPedido);
+        pedido.setEstado(Estado.EN_PREPARACION);
+
+        Long idEmpleado = seguridadContextPort.obtenerIdUsuarioAutenticado();
+        pedido.setIdEmpleadoAsignado(idEmpleado);
+        return pedidoPersistencePort.asignarPedido(pedido);
+    }
+
 }

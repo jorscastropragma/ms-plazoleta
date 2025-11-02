@@ -15,5 +15,6 @@ public class PedidosResponse {
     LocalDateTime fecha;
     Estado estado;
     Long idRestaurante;
+    Long idEmpleadoAsignado;
     List<PedidoPlatosResponse> platos;
 }

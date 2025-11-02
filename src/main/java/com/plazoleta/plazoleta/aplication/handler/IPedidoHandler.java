@@ -9,4 +9,5 @@ import org.springframework.data.domain.Pageable;
 public interface IPedidoHandler {
     void guardarPedido(PedidoRequest pedidoRequest);
     Page<PedidosResponse> obtenerPedidos(Long idEmpleado, Estado estado, Pageable pageable);
+    PedidosResponse asignarPedido(Long idPedido);
 }

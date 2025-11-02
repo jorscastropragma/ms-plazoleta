@@ -70,4 +70,9 @@ public class PedidoRestController {
 
     }
 
+    @PatchMapping("/asignacion/{idPedido}")
+    public ResponseEntity<PedidosResponse> asignarmePedido(@PathVariable Long idPedido){
+        return ResponseEntity.ok(pedidoHandler.asignarPedido(idPedido));
+    }
+
 }

@@ -46,4 +46,8 @@ public class JwtService {
     public String obtenerRole(String token) {
         return obtenerClaims(token).get("rol", String.class);
     }
+
+    public Long obtenerIdEmpleado(String token) {
+        return obtenerClaims(token).get("idEmpleado", Long.class);
+    }
 }

@@ -24,6 +24,7 @@ public class PedidoEntity {
     @Enumerated(EnumType.STRING)
     Estado estado;
     Long idRestaurante;
+    Long idEmpleadoAsignado;
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoPlatoEntity> pedidoPlatos;
 }

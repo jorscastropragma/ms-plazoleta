@@ -5,10 +5,7 @@ import com.plazoleta.plazoleta.domain.exception.ReglaDeNegocioInvalidaException;
 import com.plazoleta.plazoleta.domain.model.Estado;
 import com.plazoleta.plazoleta.domain.model.Pedido;
 import com.plazoleta.plazoleta.domain.model.PedidoPlato;
-import com.plazoleta.plazoleta.domain.spi.IPedidoPersistencePort;
-import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
-import com.plazoleta.plazoleta.domain.spi.IRestauranteEmpleadoPersistencePort;
-import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
+import com.plazoleta.plazoleta.domain.spi.*;
 import com.plazoleta.plazoleta.domain.validations.PedidoValidador;
 import com.plazoleta.plazoleta.infraestructure.exception.RecursoNoEncontradoException;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +39,8 @@ class PedidoUseCaseTest {
     PedidoValidador pedidoValidador;
     @Mock
     IRestauranteEmpleadoPersistencePort restauranteEmpleadoPersistencePort;
+    @Mock
+    ISeguridadContextPort seguridadContextPort;
 
     private IPedidoServicePort useCase;
 
@@ -52,7 +51,8 @@ class PedidoUseCaseTest {
                 restaurantePersistencePort,
                 platoPersistencePort,
                 pedidoValidador,
-                restauranteEmpleadoPersistencePort
+                restauranteEmpleadoPersistencePort,
+                seguridadContextPort
         );
     }
 
@@ -63,6 +63,7 @@ class PedidoUseCaseTest {
                 LocalDateTime.now(),
                 estadoInicial,
                 idRestaurante,
+                null,
                 List.of(new PedidoPlato(null, 10L, 2), new PedidoPlato(null, 11L, 1))
         );
         pedido.getPedidoPlatos().forEach(pp -> pp.setPedido(pedido));
@@ -104,9 +105,9 @@ class PedidoUseCaseTest {
         Long idRestaurante = 100L;
         Estado estado = Estado.PENDIENTE;
         Pageable pageable = PageRequest.of(0, 10);
-        Pedido pedido = new Pedido(1l, 1l, LocalDateTime.now(), estado, idRestaurante, List.of());
+        Pedido pedido = new Pedido(1l, 1l, LocalDateTime.now(), estado, idRestaurante,null, List.of());
 
-        List<Pedido> pedidosList = List.of(pedido, new Pedido(1l, 1l, LocalDateTime.now(), estado, idRestaurante, List.of()));
+        List<Pedido> pedidosList = List.of(pedido, new Pedido(1l, 1l, LocalDateTime.now(), estado, idRestaurante,null, List.of()));
         Page<Pedido> expectedPage = new PageImpl<>(pedidosList, pageable, pedidosList.size());
 
         when(restauranteEmpleadoPersistencePort.obtenerIdRestaurantePorEmpleado(idEmpleado))

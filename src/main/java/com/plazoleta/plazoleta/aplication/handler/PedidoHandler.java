@@ -37,4 +37,9 @@ public class PedidoHandler implements IPedidoHandler{
     public Page<PedidosResponse> obtenerPedidos(Long idEmpleado, Estado estado, Pageable pageable) {
         return pedidoResponseMapper.pedidosToPedidosResponse(pedidoServicePort.obtenerPedidos(idEmpleado,estado,pageable));
     }
+
+    @Override
+    public PedidosResponse asignarPedido(Long idPedido) {
+        return pedidoResponseMapper.pedidoToPedidosResponse(pedidoServicePort.asignarPedido(idPedido));
+    }
 }

@@ -47,6 +47,7 @@ class PedidoValidadorTest {
                 LocalDateTime.now(),
                 Estado.PENDIENTE,
                 idRestaurante,
+                null,
                 List.of()
         );
         var detalles = java.util.Arrays.stream(idPlatos)

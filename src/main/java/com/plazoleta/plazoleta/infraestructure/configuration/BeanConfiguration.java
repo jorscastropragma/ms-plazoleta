@@ -94,7 +94,8 @@ public class BeanConfiguration {
                 restaurantePersistencePort(),
                 platoPersistencePort(),
                 new PedidoValidador(),
-                restauranteEmpleadoPersistencePort()
+                restauranteEmpleadoPersistencePort(),
+                seguridadContextPort()
         );
     }
 
