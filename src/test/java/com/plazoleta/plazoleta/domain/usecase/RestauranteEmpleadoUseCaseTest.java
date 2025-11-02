@@ -42,7 +42,7 @@ class RestauranteEmpleadoUseCaseTest {
         doThrow(new RecursoNoEncontradoException("No hay restaurantes registrados."))
                 .when(restauranteEmpleadoPersistencePort)
                 .guardarRestauranteEmpleado(null, idEmpleado);
-        
+
         RecursoNoEncontradoException exception = assertThrows(
                 RecursoNoEncontradoException.class,
                 () -> restauranteEmpleadoUseCase.guardarRestauranteEmpleado(idRestaurante, idEmpleado)

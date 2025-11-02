@@ -3,7 +3,6 @@ package com.plazoleta.plazoleta.aplication.mapper;
 
 import com.plazoleta.plazoleta.aplication.dto.PedidoPlatosRequest;
 import com.plazoleta.plazoleta.aplication.dto.PedidoRequest;
-import com.plazoleta.plazoleta.aplication.dto.PedidosResponse;
 import com.plazoleta.plazoleta.domain.model.Pedido;
 import com.plazoleta.plazoleta.domain.model.PedidoPlato;
 import org.mapstruct.Mapper;

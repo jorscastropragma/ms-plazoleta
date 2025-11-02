@@ -5,7 +5,6 @@ import com.plazoleta.plazoleta.domain.model.Restaurante;
 import com.plazoleta.plazoleta.domain.model.Usuario;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IUsuarioPersistencePort;
-import com.plazoleta.plazoleta.domain.validations.RestauranteValidador;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
