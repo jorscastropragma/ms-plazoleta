@@ -48,6 +48,22 @@ public class PedidoRestController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Operation(summary = "Listar pedidos",
+            description = "Listar pedidos de un empleado filtrando por estado del pedido")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = PedidosResponse.class)
+                            )),
+                    @ApiResponse(responseCode = "422",
+                            description = "Error en validacion de los datos",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            ))
+            }
+    )
     @GetMapping("/lista/{id}/empleado")
     public Page<PedidosResponse> listarPedidos(@PathVariable Long id, @RequestParam("estado") Estado estado, Pageable pageable){
         return pedidoHandler.obtenerPedidos(id,estado,pageable);

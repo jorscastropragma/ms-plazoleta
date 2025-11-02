@@ -1,6 +1,7 @@
 package com.plazoleta.plazoleta.domain.usecase;
 
 import com.plazoleta.plazoleta.domain.api.IPedidoServicePort;
+import com.plazoleta.plazoleta.domain.exception.ReglaDeNegocioInvalidaException;
 import com.plazoleta.plazoleta.domain.model.Estado;
 import com.plazoleta.plazoleta.domain.model.Pedido;
 import com.plazoleta.plazoleta.domain.model.PedidoPlato;
@@ -9,14 +10,20 @@ import com.plazoleta.plazoleta.domain.spi.IPlatoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IRestauranteEmpleadoPersistencePort;
 import com.plazoleta.plazoleta.domain.spi.IRestaurantePersistencePort;
 import com.plazoleta.plazoleta.domain.validations.PedidoValidador;
+import com.plazoleta.plazoleta.infraestructure.exception.RecursoNoEncontradoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,4 +97,77 @@ class PedidoUseCaseTest {
 
         verify(pedidoPersistencePort, never()).guardarPedido(any());
     }
+
+    @Test
+    void obtenerPedidos_CuandoExistenPedidos_RetornaPageCorrectamente() {
+        Long idEmpleado = 1L;
+        Long idRestaurante = 100L;
+        Estado estado = Estado.PENDIENTE;
+        Pageable pageable = PageRequest.of(0, 10);
+        Pedido pedido = new Pedido(1l, 1l, LocalDateTime.now(), estado, idRestaurante, List.of());
+
+        List<Pedido> pedidosList = List.of(pedido, new Pedido(1l, 1l, LocalDateTime.now(), estado, idRestaurante, List.of()));
+        Page<Pedido> expectedPage = new PageImpl<>(pedidosList, pageable, pedidosList.size());
+
+        when(restauranteEmpleadoPersistencePort.obtenerIdRestaurantePorEmpleado(idEmpleado))
+                .thenReturn(idRestaurante);
+        when(pedidoPersistencePort.obtenerPedidos(idRestaurante, estado, pageable))
+                .thenReturn(expectedPage);
+
+        Page<Pedido> result = useCase.obtenerPedidos(idEmpleado, estado, pageable);
+
+        assertNotNull(result);
+        assertEquals(2, result.getContent().size());
+        assertEquals(expectedPage, result);
+
+        verify(restauranteEmpleadoPersistencePort).obtenerIdRestaurantePorEmpleado(idEmpleado);
+        verify(pedidoPersistencePort).obtenerPedidos(idRestaurante, estado, pageable);
+    }
+
+    @Test
+    void obtenerPedidos_CuandoEmpleadoNoTieneRestaurante_LanzaExcepcionEnObtenerIdRestaurante() {
+        Long idEmpleado = 1L;
+        Estado estado = Estado.PENDIENTE;
+        Pageable pageable = PageRequest.of(0, 10);
+        when(restauranteEmpleadoPersistencePort.obtenerIdRestaurantePorEmpleado(idEmpleado))
+                .thenThrow(new RecursoNoEncontradoException("No hay restaurantes registrados."));
+
+
+        RecursoNoEncontradoException exception = assertThrows(
+                RecursoNoEncontradoException.class,
+                () -> useCase.obtenerPedidos(idEmpleado, estado, pageable)
+        );
+
+        assertEquals("No hay restaurantes registrados.", exception.getMessage());
+
+        verify(restauranteEmpleadoPersistencePort).obtenerIdRestaurantePorEmpleado(idEmpleado);
+        verify(pedidoPersistencePort, never()).obtenerPedidos(any(), any(), any());
+    }
+
+    @Test
+    void obtenerPedidos_CuandoNoExistenPedidosYPageSizeEsUno_LanzaExcepcion() {
+        Long idEmpleado = 1L;
+        Estado estado = Estado.PENDIENTE;
+        Long idRestaurante = 100L;
+
+        Pageable pageSizeUno = PageRequest.of(0, 1);
+        Page<Pedido> emptyPage = new PageImpl<>(Collections.emptyList(), pageSizeUno, 0);
+
+        when(restauranteEmpleadoPersistencePort.obtenerIdRestaurantePorEmpleado(idEmpleado))
+                .thenReturn(idRestaurante);
+        when(pedidoPersistencePort.obtenerPedidos(idRestaurante, estado, pageSizeUno))
+                .thenReturn(emptyPage);
+        
+        ReglaDeNegocioInvalidaException exception = assertThrows(
+                ReglaDeNegocioInvalidaException.class,
+                () -> useCase.obtenerPedidos(idEmpleado, estado, pageSizeUno)
+        );
+
+        assertEquals("Ya existe un pedido activo para este cliente", exception.getMessage()); // Ajusta según tu MensajeDomainException
+
+        verify(restauranteEmpleadoPersistencePort).obtenerIdRestaurantePorEmpleado(idEmpleado);
+        verify(pedidoPersistencePort).obtenerPedidos(idRestaurante, estado, pageSizeUno);
+    }
+
+
 }
