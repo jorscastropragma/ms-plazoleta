@@ -22,6 +22,9 @@ public class Pedido {
         this.pedidoPlatos = pedidoPlatos;
     }
 
+    public Pedido() {
+    }
+
     public Long getId() {
         return id;
     }

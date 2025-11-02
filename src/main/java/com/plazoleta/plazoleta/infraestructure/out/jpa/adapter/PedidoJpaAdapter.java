@@ -5,7 +5,6 @@ import com.plazoleta.plazoleta.domain.model.Pedido;
 import com.plazoleta.plazoleta.domain.spi.IPedidoPersistencePort;
 import com.plazoleta.plazoleta.infraestructure.exception.MensajeInfraestructuraException;
 import com.plazoleta.plazoleta.infraestructure.exception.RecursoNoEncontradoException;
-import com.plazoleta.plazoleta.infraestructure.out.jpa.entity.PedidoEntity;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.mapper.PedidoEntityMapper;
 import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IPedidoRepository;
 import lombok.RequiredArgsConstructor;

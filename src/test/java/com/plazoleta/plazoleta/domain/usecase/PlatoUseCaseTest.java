@@ -81,7 +81,7 @@ class PlatoUseCaseTest {
 
 
     @Test
-    void actualizarPlato_correectamente_devuelvePlatoActualizado() {
+    void actualizarPlato_correctamente_devuelvePlatoActualizado() {
         Plato platoActualizado = new Plato("plato",100,
                 "nueva descripcion","http://otro",
                 1L,"POSTRE",true,1L);

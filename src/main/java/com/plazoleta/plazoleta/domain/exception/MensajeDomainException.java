@@ -7,7 +7,7 @@ public enum MensajeDomainException {
     NO_ES_EL_PROPIETARIO_DEL_RESTAURANTE("No es el propietario del restaurante."),
     NO_ES_EL_PROPIETARIO_DEL_PLATO("No es el propietario del plato."),
     NOMBRE_RESTAURANTE_INVALIDO("El nombre del restaurante es invalido."),
-    NO_ES_EL_EMPLEADO_DE_RESTAURANTE("No es el empleado del restaurante."),
+    PEDIDO_DIFERENTE_PENDIENTE("El pedido debe estar en estado PENDIENTE"),
     PEDIDO_EXISTE("Ya existe un pedido activo para este cliente");
 
     private String mensaje;

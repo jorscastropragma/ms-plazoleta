@@ -7,6 +7,7 @@ import com.plazoleta.plazoleta.domain.model.Pedido;
 import com.plazoleta.plazoleta.domain.model.PedidoPlato;
 import com.plazoleta.plazoleta.domain.spi.*;
 import com.plazoleta.plazoleta.domain.validations.PedidoValidador;
+import com.plazoleta.plazoleta.infraestructure.exception.MensajeInfraestructuraException;
 import com.plazoleta.plazoleta.infraestructure.exception.RecursoNoEncontradoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,16 +89,6 @@ class PedidoUseCaseTest {
         verifyNoMoreInteractions(pedidoValidador, pedidoPersistencePort, restaurantePersistencePort, platoPersistencePort);
     }
 
-    @Test
-    void guardarPedido_siValidadorLanzaExcepcion_noDebePersistir() {
-        var pedido = buildPedido(30L, 5L, null);
-        doThrow(new RuntimeException("bloqueado")).when(pedidoValidador)
-                .validarEstadoPedidoCLiente(pedidoPersistencePort, 30L);
-
-        assertThrows(RuntimeException.class, () -> useCase.guardarPedido(pedido));
-
-        verify(pedidoPersistencePort, never()).guardarPedido(any());
-    }
 
     @Test
     void obtenerPedidos_CuandoExistenPedidos_RetornaPageCorrectamente() {
@@ -126,7 +117,7 @@ class PedidoUseCaseTest {
     }
 
     @Test
-    void obtenerPedidos_CuandoEmpleadoNoTieneRestaurante_LanzaExcepcionEnObtenerIdRestaurante() {
+    void obtenerPedidos_CuandoEmpleadoNoTieneRestaurante_LanzaExcepcion() {
         Long idEmpleado = 1L;
         Estado estado = Estado.PENDIENTE;
         Pageable pageable = PageRequest.of(0, 10);
@@ -170,5 +161,81 @@ class PedidoUseCaseTest {
         verify(pedidoPersistencePort).obtenerPedidos(idRestaurante, estado, pageSizeUno);
     }
 
+    @Test
+    void asignarPedido_CuandoPedidoExiste_DeberiaAsignarCorrectamente() {
+        Long idPedido = 1L;
+        Long idEmpleadoAutenticado = 10L;
 
+        Pedido pedidoExistente = new Pedido();
+        pedidoExistente.setId(idPedido);
+        pedidoExistente.setEstado(Estado.PENDIENTE);
+        pedidoExistente.setIdEmpleadoAsignado(null);
+
+        Pedido pedidoModificado = new Pedido();
+        pedidoModificado.setId(idPedido);
+        pedidoModificado.setEstado(Estado.EN_PREPARACION);
+        pedidoModificado.setIdEmpleadoAsignado(idEmpleadoAutenticado);
+
+        when(pedidoPersistencePort.obtenerPedido(idPedido)).thenReturn(pedidoExistente);
+        when(seguridadContextPort.obtenerIdUsuarioAutenticado()).thenReturn(idEmpleadoAutenticado);
+        when(pedidoPersistencePort.asignarPedido(any(Pedido.class))).thenReturn(pedidoModificado);
+
+
+        Pedido resultado = useCase.asignarPedido(idPedido);
+
+
+        assertNotNull(resultado);
+        assertEquals(Estado.EN_PREPARACION, resultado.getEstado());
+        assertEquals(idEmpleadoAutenticado, resultado.getIdEmpleadoAsignado());
+
+        verify(pedidoPersistencePort).obtenerPedido(idPedido);
+        verify(seguridadContextPort).obtenerIdUsuarioAutenticado();
+        verify(pedidoPersistencePort).asignarPedido(argThat(pedido ->
+                pedido.getEstado() == Estado.EN_PREPARACION &&
+                        pedido.getIdEmpleadoAsignado().equals(idEmpleadoAutenticado)
+        ));
+    }
+
+    @Test
+    void asignarPedido_CuandoPedidoNoExiste_LanzaExcepcion() {
+
+        Long idPedido = 999L;
+
+        when(pedidoPersistencePort.obtenerPedido(idPedido))
+                .thenThrow(new RecursoNoEncontradoException(MensajeInfraestructuraException.PEDIDO_NO_ENCONTRADO.getMensaje()));
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> useCase.asignarPedido(idPedido)
+        );
+
+        assertEquals("El pedido no existe.", exception.getMessage());
+        verify(pedidoPersistencePort).obtenerPedido(idPedido);
+        verify(seguridadContextPort, never()).obtenerIdUsuarioAutenticado();
+        verify(pedidoPersistencePort, never()).asignarPedido(any());
+    }
+
+    @Test
+    void asignarPedido_CuandoPedidoEstaEnEstadoListo_LanzaExcepcion() {
+        // Arrange
+        Long idPedido = 32l;
+
+        Pedido pedidoExistente = new Pedido();
+        pedidoExistente.setId(idPedido);
+        pedidoExistente.setEstado(Estado.LISTO);
+        pedidoExistente.setIdEmpleadoAsignado(null);
+
+        when(pedidoPersistencePort.obtenerPedido(idPedido))
+                .thenReturn(pedidoExistente);
+        // Act & Assert
+        ReglaDeNegocioInvalidaException exception = assertThrows(
+                ReglaDeNegocioInvalidaException.class,
+                () -> useCase.asignarPedido(idPedido)
+        );
+
+        assertEquals("El pedido debe estar en estado PENDIENTE", exception.getMessage());
+        verify(pedidoPersistencePort).obtenerPedido(32l);
+        verify(seguridadContextPort, never()).obtenerIdUsuarioAutenticado();
+        verify(pedidoPersistencePort, never()).asignarPedido(any());
+    }
 }

@@ -46,8 +46,8 @@ public class SecurityContextUtil implements ISeguridadContextPort {
     public Long obtenerIdUsuarioAutenticado(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object details = authentication.getDetails();
-        if (details instanceof Long) {
-            return (Long) details;
+        if (details instanceof Long id) {
+            return id;
         }
         throw new RecursoNoEncontradoException(MensajeInfraestructuraException.USUARIO_NO_ENCONTRADO_AUTENTICADO.getMensaje());
     }

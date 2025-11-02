@@ -68,7 +68,7 @@ class RestauranteUseCaseTest {
     }
 
     @Test
-    void guardarRestaurante_CuandoNoEsUnPropietario(){
+    void guardarRestaurante_CuandoNoEsUnPropietario_LanzaExcepcion(){
         Usuario usuario = new Usuario("hector","perez",5464651L,"1546435",
                 LocalDate.now(),"email@email.com","ADMINISTRADOR");
 

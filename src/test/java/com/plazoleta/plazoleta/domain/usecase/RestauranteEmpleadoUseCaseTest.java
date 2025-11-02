@@ -35,7 +35,7 @@ class RestauranteEmpleadoUseCaseTest {
     }
 
     @Test
-    void guardarRestauranteEmpleado_CuandoIdRestauranteEsNull_DeberiaPropagarExcepcion() {
+    void guardarRestauranteEmpleado_CuandoIdRestauranteEsNull_LanzaExcepcion() {
         Long idRestaurante = null;
         Long idEmpleado = 2L;
 
