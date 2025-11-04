@@ -39,8 +39,9 @@ public class PlatoRestController {
             )
     })
     @PostMapping("/")
-    public ResponseEntity<Void> guardarPlato(@Valid @RequestBody PlatoRequest platoRequest){
-        iPlatoHandler.guardarPlato(platoRequest);
+    public ResponseEntity<Void> guardarPlato(@Valid @RequestBody PlatoRequest platoRequest,
+                                             @RequestHeader(value = "X-Usuario", required = false) String emailUsuario){
+        iPlatoHandler.guardarPlato(platoRequest, emailUsuario);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -53,8 +54,10 @@ public class PlatoRestController {
             @ApiResponse(responseCode = "400",content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}")
-    public ResponseEntity<PlatoResponse> actualizarPlato(@PathVariable Long id, @Valid @RequestBody PlatoPrecioDescripcionRequest platoRequest){
-        return ResponseEntity.ok(iPlatoHandler.actualizarPlato(platoRequest,id));
+    public ResponseEntity<PlatoResponse> actualizarPlato(@PathVariable Long idPlato,
+                                                         @Valid @RequestBody PlatoPrecioDescripcionRequest platoRequest,
+                                                         @RequestHeader(value = "X-Usuario", required = false) String emailUsuario){
+        return ResponseEntity.ok(iPlatoHandler.actualizarPlato(platoRequest,idPlato,emailUsuario));
     }
 
     @Operation(summary = "Cambiar estado plato",
@@ -66,8 +69,9 @@ public class PlatoRestController {
             @ApiResponse(responseCode = "400",content = @Content(mediaType = "application/json"))
     })
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<PlatoResponse> cambiarEstadoPlato(@PathVariable Long id, @Valid @RequestBody PlatoEstadoRequest platoRequest){
-        return ResponseEntity.ok(iPlatoHandler.cambiarEstadoPlato(platoRequest,id));
+    public ResponseEntity<PlatoResponse> cambiarEstadoPlato(@PathVariable Long id, @Valid @RequestBody PlatoEstadoRequest platoRequest,
+                                                            @RequestHeader(value = "X-Usuario", required = false) String emailUsuario){
+        return ResponseEntity.ok(iPlatoHandler.cambiarEstadoPlato(platoRequest,id,emailUsuario));
     }
 
     @Operation(summary = "Listar todos los platos de un restaurante",

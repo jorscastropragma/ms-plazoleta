@@ -26,6 +26,7 @@ import static org.mockito.Mockito.*;
 class PlatoUseCaseTest {
 
     private Plato plato;
+    private String emailUsuario;
     @Mock
     private IPlatoPersistencePort platoPersistencePort;
     @Mock
@@ -43,16 +44,18 @@ class PlatoUseCaseTest {
         plato = new Plato("plato",100,
                 "plato desc", "http://logo.jpg",
                 1L,"POSTRE",false,1L);
+        String emailUsuario = "prueba@email";
     }
 
     @Test
     void guardarPlato_CuenadoRestauranteExiste_GuardarPlatoActivo() {
 
+
         when(restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())).
                 thenReturn(true);
-        when(seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante())).thenReturn(true);
+        when(seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante(),emailUsuario)).thenReturn(true);
         
-        platoUseCase.guardarPlato(plato);
+        platoUseCase.guardarPlato(plato,emailUsuario);
 
         assertTrue(plato.getActivo(), "El plato debe estar activo por defecto");
 
@@ -68,7 +71,7 @@ class PlatoUseCaseTest {
 
         ReglaDeNegocioInvalidaException exception =
                 assertThrows(ReglaDeNegocioInvalidaException.class,() ->{
-            platoUseCase.guardarPlato(plato);
+            platoUseCase.guardarPlato(plato,emailUsuario);
         });
 
         assertEquals("Restaurante no encontrado.",exception.getMessage());
@@ -85,10 +88,10 @@ class PlatoUseCaseTest {
         Plato platoActualizado = new Plato("plato",100,
                 "nueva descripcion","http://otro",
                 1L,"POSTRE",true,1L);
-        when(seguiridadContextPort.esPropietarioDePlato(plato.getIdRestaurante())).thenReturn(true);
+        when(seguiridadContextPort.esPropietarioDePlato(plato.getIdRestaurante(),emailUsuario)).thenReturn(true);
         when(platoPersistencePort.actualizarPlato(plato,1L)).thenReturn(platoActualizado);
 
-        Plato resultado = platoUseCase.actualizarPlato(plato,1L);
+        Plato resultado = platoUseCase.actualizarPlato(plato,1L,emailUsuario);
 
         assertEquals(platoActualizado,resultado);
         verify(platoPersistencePort).actualizarPlato(plato,1L);
@@ -98,29 +101,29 @@ class PlatoUseCaseTest {
     void guardarPlato_NoEsElPropietario_lanzaExcepcion() {
         when(restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())).
                 thenReturn(true);
-        when(seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante())).thenReturn(false);
+        when(seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante(),emailUsuario)).thenReturn(false);
 
         ReglaDeNegocioInvalidaException exception = assertThrows(ReglaDeNegocioInvalidaException.class, () -> {
-            platoUseCase.guardarPlato(plato);
+            platoUseCase.guardarPlato(plato,emailUsuario);
         });
 
         assertEquals("No es el propietario del restaurante.",exception.getMessage());
 
-        verify(seguiridadContextPort).esPropietarioDeRestaurante(1L);
+        verify(seguiridadContextPort).esPropietarioDeRestaurante(1L,emailUsuario);
         verify(platoPersistencePort,never()).guardarPlato(plato);
     }
 
     @Test
     void actualizarPlato_NoEsElPropietario_lanzaExcepcion() {
-        when(seguiridadContextPort.esPropietarioDePlato(plato.getIdRestaurante())).thenReturn(false);
+        when(seguiridadContextPort.esPropietarioDePlato(plato.getIdRestaurante(),emailUsuario)).thenReturn(false);
 
         ReglaDeNegocioInvalidaException exception = assertThrows(ReglaDeNegocioInvalidaException.class, () -> {
-            platoUseCase.actualizarPlato(plato,1L);
+            platoUseCase.actualizarPlato(plato,1L,emailUsuario);
         });
 
         assertEquals("No es el propietario del plato.",exception.getMessage());
 
-        verify(seguiridadContextPort).esPropietarioDePlato(1L);
+        verify(seguiridadContextPort).esPropietarioDePlato(1L,emailUsuario);
         verify(platoPersistencePort,never()).actualizarPlato(plato,1L);
     }
 

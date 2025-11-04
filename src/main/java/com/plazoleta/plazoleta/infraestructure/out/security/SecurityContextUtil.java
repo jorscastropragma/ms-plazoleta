@@ -10,8 +10,6 @@ import com.plazoleta.plazoleta.infraestructure.out.jpa.repository.IRestauranteRe
 import com.plazoleta.plazoleta.infraestructure.out.restconsumer.dto.UsuarioInfo;
 import com.plazoleta.plazoleta.infraestructure.out.restconsumer.feign.UsuarioFeignClient;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @RequiredArgsConstructor
 public class SecurityContextUtil implements ISeguridadContextPort {
@@ -21,34 +19,21 @@ public class SecurityContextUtil implements ISeguridadContextPort {
     private final IPlatoRepository platoRepository;
 
     @Override
-    public boolean esPropietarioDeRestaurante(Long idRestaurante) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public boolean esPropietarioDeRestaurante(Long idRestaurante, String emailUsuario) {
 
-        String correoAutenticado = authentication.getName();
         RestauranteEntity restaurante = restauranteRepository.getReferenceById(idRestaurante);
         UsuarioInfo usuario = usuarioFeignClient.obtenerUsuarioPorId(restaurante.getIdUsuario());
 
-        return usuario.getCorreo().equals(correoAutenticado);
+        return usuario.getCorreo().equals(emailUsuario);
     }
 
     @Override
-    public boolean esPropietarioDePlato(Long idPlato) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public boolean esPropietarioDePlato(Long idPlato, String emailUsuario) {
 
-        String correoAutenticado = authentication.getName();
         PlatoEntity plato = platoRepository.getReferenceById(idPlato);
         RestauranteEntity restaurante = restauranteRepository.getReferenceById(plato.getIdRestaurante());
         UsuarioInfo usuario = usuarioFeignClient.obtenerUsuarioPorId(restaurante.getIdUsuario());
 
-        return usuario.getCorreo().equals(correoAutenticado);
-    }
-
-    public Long obtenerIdUsuarioAutenticado(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object details = authentication.getDetails();
-        if (details instanceof Long id) {
-            return id;
-        }
-        throw new RecursoNoEncontradoException(MensajeInfraestructuraException.USUARIO_NO_ENCONTRADO_AUTENTICADO.getMensaje());
+        return usuario.getCorreo().equals(emailUsuario);
     }
 }

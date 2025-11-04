@@ -1,7 +1,6 @@
 package com.plazoleta.plazoleta.domain.spi;
 
 public interface ISeguridadContextPort {
-    boolean esPropietarioDeRestaurante(Long idRestaurante);
-    boolean esPropietarioDePlato(Long idPlato);
-    Long obtenerIdUsuarioAutenticado();
+    boolean esPropietarioDeRestaurante(Long idRestaurante, String emailUsuario);
+    boolean esPropietarioDePlato(Long idPlato, String emailUsuario);
 }

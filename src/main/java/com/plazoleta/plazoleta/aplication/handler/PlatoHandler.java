@@ -20,22 +20,22 @@ public class PlatoHandler implements IPlatoHandler{
     private final PlatoCategoriaMapper platoCategoriaMapper;
 
     @Override
-    public void guardarPlato(PlatoRequest platoRequest) {
-        platoServicePort.guardarPlato(platoRequestMapper.toPlato(platoRequest));
+    public void guardarPlato(PlatoRequest platoRequest, String emailUsuario) {
+        platoServicePort.guardarPlato(platoRequestMapper.toPlato(platoRequest),emailUsuario);
     }
 
     @Override
-    public PlatoResponse actualizarPlato(PlatoPrecioDescripcionRequest platoRequest, Long id) {
+    public PlatoResponse actualizarPlato(PlatoPrecioDescripcionRequest platoRequest, Long idPlato, String emailUsuario) {
         return platoResponseMapper.toPlatoResponse(
                 platoServicePort.actualizarPlato(
-                        platoPrecioDescripcionRequestMapper.toPlato(platoRequest),id));
+                        platoPrecioDescripcionRequestMapper.toPlato(platoRequest),idPlato, emailUsuario));
     }
 
     @Override
-    public PlatoResponse cambiarEstadoPlato(PlatoEstadoRequest platoRequest, Long idPlato) {
+    public PlatoResponse cambiarEstadoPlato(PlatoEstadoRequest platoRequest, Long idPlato, String emailUsuario) {
         return platoResponseMapper.toPlatoResponse(
                 platoServicePort.actualizarPlato(
-                        platoEstadoMapper.toPlato(platoRequest),idPlato));
+                        platoEstadoMapper.toPlato(platoRequest),idPlato,emailUsuario));
     }
 
     @Override

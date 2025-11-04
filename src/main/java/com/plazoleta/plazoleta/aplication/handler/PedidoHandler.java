@@ -39,7 +39,7 @@ public class PedidoHandler implements IPedidoHandler{
     }
 
     @Override
-    public PedidosResponse asignarPedido(Long idPedido) {
-        return pedidoResponseMapper.pedidoToPedidosResponse(pedidoServicePort.asignarPedido(idPedido));
+    public PedidosResponse asignarPedido(Long idPedido, Long idEmpleado) {
+        return pedidoResponseMapper.pedidoToPedidosResponse(pedidoServicePort.asignarPedido(idPedido, idEmpleado));
     }
 }

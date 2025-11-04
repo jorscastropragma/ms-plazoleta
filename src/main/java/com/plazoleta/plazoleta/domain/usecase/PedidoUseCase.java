@@ -55,14 +55,13 @@ public class PedidoUseCase implements IPedidoServicePort {
     }
 
     @Override
-    public Pedido asignarPedido(Long idPedido) {
+    public Pedido asignarPedido(Long idPedido, Long idEmpleado) {
         Pedido pedido = pedidoPersistencePort.obtenerPedido(idPedido);
         if (pedido.getEstado() != Estado.PENDIENTE){
             throw new ReglaDeNegocioInvalidaException(MensajeDomainException.PEDIDO_DIFERENTE_PENDIENTE.getMensaje());
         }
         pedido.setEstado(Estado.EN_PREPARACION);
-
-        Long idEmpleado = seguridadContextPort.obtenerIdUsuarioAutenticado();
+        System.out.println("idEmpleado usecase: " + idEmpleado);
         pedido.setIdEmpleadoAsignado(idEmpleado);
         return pedidoPersistencePort.asignarPedido(pedido);
     }

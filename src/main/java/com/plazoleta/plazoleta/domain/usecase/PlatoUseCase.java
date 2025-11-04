@@ -29,11 +29,11 @@ public class PlatoUseCase implements IPlatoServicePort {
     }
 
     @Override
-    public void guardarPlato(Plato plato) {
+    public void guardarPlato(Plato plato, String emailUsuario) {
         if (!restaurantePersistencePort.existeRestaurantePorId(plato.getIdRestaurante())){
             throw new ReglaDeNegocioInvalidaException(MensajeDomainException.RESTAURANTE_NO_ENCONTRADO.getMensaje());
         }
-        if (!seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante())){
+        if (!seguiridadContextPort.esPropietarioDeRestaurante(plato.getIdRestaurante(), emailUsuario)){
             throw new ReglaDeNegocioInvalidaException(MensajeDomainException.NO_ES_EL_PROPIETARIO_DEL_RESTAURANTE.getMensaje());
         }
         plato.setActivo(true);
@@ -41,11 +41,11 @@ public class PlatoUseCase implements IPlatoServicePort {
     }
 
     @Override
-    public Plato actualizarPlato(Plato plato, Long id) {
-        if (!seguiridadContextPort.esPropietarioDePlato(id)){
+    public Plato actualizarPlato(Plato plato, Long idPlato, String emailUsuario) {
+        if (!seguiridadContextPort.esPropietarioDePlato(idPlato,emailUsuario)){
             throw new ReglaDeNegocioInvalidaException(MensajeDomainException.NO_ES_EL_PROPIETARIO_DEL_PLATO.getMensaje());
         }
-        return platoPersistencePort.actualizarPlato(plato,id);
+        return platoPersistencePort.actualizarPlato(plato,idPlato);
     }
 
     @Override

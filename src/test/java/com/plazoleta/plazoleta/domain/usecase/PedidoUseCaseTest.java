@@ -44,6 +44,8 @@ class PedidoUseCaseTest {
     ISeguridadContextPort seguridadContextPort;
 
     private IPedidoServicePort useCase;
+    private Long idEmpleado = 1L;
+
 
     @BeforeEach
     void setUp() {
@@ -181,7 +183,7 @@ class PedidoUseCaseTest {
         when(pedidoPersistencePort.asignarPedido(any(Pedido.class))).thenReturn(pedidoModificado);
 
 
-        Pedido resultado = useCase.asignarPedido(idPedido);
+        Pedido resultado = useCase.asignarPedido(idPedido,idEmpleado);
 
 
         assertNotNull(resultado);
@@ -206,7 +208,7 @@ class PedidoUseCaseTest {
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
-                () -> useCase.asignarPedido(idPedido)
+                () -> useCase.asignarPedido(idPedido,idEmpleado)
         );
 
         assertEquals("El pedido no existe.", exception.getMessage());
@@ -230,7 +232,7 @@ class PedidoUseCaseTest {
         // Act & Assert
         ReglaDeNegocioInvalidaException exception = assertThrows(
                 ReglaDeNegocioInvalidaException.class,
-                () -> useCase.asignarPedido(idPedido)
+                () -> useCase.asignarPedido(idPedido,idEmpleado)
         );
 
         assertEquals("El pedido debe estar en estado PENDIENTE", exception.getMessage());
